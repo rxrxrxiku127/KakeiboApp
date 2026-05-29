@@ -1,7 +1,7 @@
-﻿@page
+@page
 @model KakeiboApp.Pages.SettingsModel
 @{
-    ViewData["Title"] = "設定";
+    ViewData["Title"] = "�ݒ�";
 }
 
 <!DOCTYPE html>
@@ -9,7 +9,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>設定</title>
+    <title>�ݒ�</title>
     <style>
             * {
                 box-sizing: border-box;
@@ -18,7 +18,7 @@
             }
 
             body {
-                font-family: 'メイリオ', sans-serif;
+                font-family: '���C���I', sans-serif;
                 background: #f0f2f8;
                 color: #333;
                 padding-bottom: 20px;
@@ -261,73 +261,73 @@
 
     <div id="banner" class="banner"></div>
 
-    {{/* カテゴリ編集モーダル */}}
+    @* �J�e�S���ҏW���[�_�� *@
     <div class="modal-overlay" id="modalCategory">
         <div class="modal">
-            <h3>📂 カテゴリを編集</h3>
+            <h3>?? �J�e�S����ҏW</h3>
             <input type="hidden" id="editCatId" />
             <div class="form-group">
-                <label>カテゴリ名</label>
+                <label>�J�e�S����</label>
                 <input type="text" id="editCatName" />
             </div>
             <div class="form-group">
-                <label>アイコン（絵文字）</label>
+                <label>�A�C�R���i�G�����j</label>
                 <input type="text" id="editCatIcon" maxlength="2" />
             </div>
             <div class="form-group">
-                <label>予算上限（円）</label>
+                <label>�\�Z����i�~�j</label>
                 <input type="number" id="editCatBudget" />
             </div>
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeModal('modalCategory')">キャンセル</button>
-                <button class="btn-save" onclick="updateCategory()">更新する</button>
+                <button class="btn-cancel" onclick="closeModal('modalCategory')">�L�����Z��</button>
+                <button class="btn-save" onclick="updateCategory()">�X�V����</button>
             </div>
         </div>
     </div>
 
-    {{/* カード編集モーダル */}}
+    @* �J�[�h�ҏW���[�_�� *@
     <div class="modal-overlay" id="modalCard">
         <div class="modal">
-            <h3>💳 カードを編集</h3>
+            <h3>?? �J�[�h��ҏW</h3>
             <input type="hidden" id="editCardId" />
             <div class="form-group">
-                <label>カード名</label>
+                <label>�J�[�h��</label>
                 <input type="text" id="editCardName" />
             </div>
             <div class="form-group">
-                <label>締め日</label>
+                <label>���ߓ�</label>
                 <input type="number" id="editCardClosing" min="1" max="31" />
             </div>
             <div class="form-group">
-                <label>引き落とし日</label>
+                <label>�������Ƃ���</label>
                 <input type="number" id="editCardBilling" min="1" max="31" />
             </div>
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeModal('modalCard')">キャンセル</button>
-                <button class="btn-save" onclick="updateCard()">更新する</button>
+                <button class="btn-cancel" onclick="closeModal('modalCard')">�L�����Z��</button>
+                <button class="btn-save" onclick="updateCard()">�X�V����</button>
             </div>
         </div>
     </div>
 
-    {{/* 固定費編集モーダル */}}
+    @* �Œ��ҏW���[�_�� *@
     <div class="modal-overlay" id="modalFixed">
         <div class="modal">
-            <h3>🔁 固定費を編集</h3>
+            <h3>?? �Œ���ҏW</h3>
             <input type="hidden" id="editFixedId" />
             <div class="form-group">
-                <label>固定費名</label>
+                <label>�Œ�</label>
                 <input type="text" id="editFixedName" />
             </div>
             <div class="form-group">
-                <label>金額（円）</label>
+                <label>���z�i�~�j</label>
                 <input type="number" id="editFixedAmount" />
             </div>
             <div class="form-group">
-                <label>毎月何日に計上</label>
+                <label>���������Ɍv��</label>
                 <input type="number" id="editFixedDay" min="1" max="31" />
             </div>
             <div class="form-group">
-                <label>カテゴリ</label>
+                <label>�J�e�S��</label>
                 <select id="editFixedCategory">
                     @foreach (var c in Model.Categories)
                     {
@@ -336,56 +336,56 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>支払い方法</label>
+                <label>�x�������@</label>
                 <select id="editFixedPayment">
-                    <option value="Cash">💵 現金</option>
-                    <option value="Card">💳 カード</option>
-                    <option value="ElectronicMoney">📲 電子マネー</option>
-                    <option value="QRPayment">📱 QR決済</option>
-                    <option value="BankAccount">🏦 口座</option>
+                    <option value="Cash">?? ����</option>
+                    <option value="Card">?? �J�[�h</option>
+                    <option value="ElectronicMoney">?? �d�q�}�l�[</option>
+                    <option value="QRPayment">?? QR����</option>
+                    <option value="BankAccount">?? ����</option>
                 </select>
             </div>
             <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeModal('modalFixed')">キャンセル</button>
-                <button class="btn-save" onclick="updateFixed()">更新する</button>
+                <button class="btn-cancel" onclick="closeModal('modalFixed')">�L�����Z��</button>
+                <button class="btn-save" onclick="updateFixed()">�X�V����</button>
             </div>
         </div>
     </div>
 
-    {{/* 共通ヘッダー */}}
+    @* ���ʃw�b�_�[ *@
     <div class="header">
-        <div class="header-title">⚙️ 設定</div>
+        <div class="header-title">?? �ݒ�</div>
         <div class="header-nav">
-            <a href="/" class="nav-link"><span>🏠</span><small>ホーム</small></a>
-            <a href="/Report" class="nav-link"><span>📊</span><small>レポート</small></a>
-            <a href="/Settings" class="nav-link active"><span>⚙️</span><small>設定</small></a>
+            <a href="/" class="nav-link"><span>??</span><small>�z�[��</small></a>
+            <a href="/Report" class="nav-link"><span>??</span><small>���|�[�g</small></a>
+            <a href="/Settings" class="nav-link active"><span>??</span><small>�ݒ�</small></a>
         </div>
     </div>
 
     <div class="container">
 
-        {{/* カテゴリ管理 */}}
+        @* �J�e�S���Ǘ� *@
         <div class="card">
-            <h3>📂 カテゴリ管理</h3>
+            <h3>?? �J�e�S���Ǘ�</h3>
             @foreach (var c in Model.Categories)
             {
                 <div class="list-item">
                     <div class="list-item-info">
                         <div class="name">@c.Icon @c.Name</div>
                         <div class="meta">
-                            予算：@(c.BudgetLimit > 0 ? $"¥{c.BudgetLimit:#,0}" : "設定なし")
-                            @(c.IsDefault ? "（デフォルト）" : "")
+                            �\�Z�F@(c.BudgetLimit > 0 ? $"\{c.BudgetLimit:#,0}" : "�ݒ�Ȃ�")
+                            @(c.IsDefault ? "�i�f�t�H���g�j" : "")
                         </div>
                     </div>
                     <div class="list-item-actions">
-                        {{/* data属性で値を渡すことで絵文字の問題を回避 */}}
+                        @* data�����Œl��n�����ƂŊG�����̖������ *@
                         <button class="btn-small btn-edit"
                                 data-id="@c.Id"
                                 data-name="@c.Name"
                                 data-icon="@c.Icon"
                                 data-budget="@c.BudgetLimit"
                                 onclick="openEditCategory(this)">
-                            ✏️ 編集
+                            ?? �ҏW
                         </button>
                         @if (!c.IsDefault)
                         {
@@ -393,44 +393,44 @@
                                     data-id="@c.Id"
                                     data-name="@c.Name"
                                     onclick="deleteCategory(this)">
-                                🗑 削除
+                                ?? �폜
                             </button>
                         }
                     </div>
                 </div>
             }
 
-            {{/* カテゴリ追加フォーム */}}
+            @* �J�e�S���ǉ��t�H�[�� *@
             <div style="margin-top:15px;padding-top:15px;border-top:1px solid #eee">
                 <div class="form-group">
-                    <label>カテゴリ名</label>
-                    <input type="text" id="catName" placeholder="例：ペット費" />
+                    <label>�J�e�S����</label>
+                    <input type="text" id="catName" placeholder="��F�y�b�g��" />
                 </div>
                 <div class="form-group">
-                    <label>アイコン（絵文字）</label>
-                    <input type="text" id="catIcon" placeholder="例：🐶" maxlength="2" />
+                    <label>�A�C�R���i�G�����j</label>
+                    <input type="text" id="catIcon" placeholder="��F??" maxlength="2" />
                 </div>
                 <div class="form-group">
-                    <label>予算上限（円）</label>
-                    <input type="number" id="catBudget" placeholder="例：10000" />
+                    <label>�\�Z����i�~�j</label>
+                    <input type="number" id="catBudget" placeholder="��F10000" />
                 </div>
-                <button class="btn btn-primary" onclick="addCategory()">➕ カテゴリを追加</button>
+                <button class="btn btn-primary" onclick="addCategory()">? �J�e�S����ǉ�</button>
             </div>
         </div>
 
-        {{/* カード管理 */}}
+        @* �J�[�h�Ǘ� *@
         <div class="card">
-            <h3>💳 カード管理</h3>
+            <h3>?? �J�[�h�Ǘ�</h3>
             @if (!Model.Cards.Any())
             {
-                <p style="color:gray;font-size:13px;margin-bottom:15px">まだカードが登録されていません</p>
+                <p style="color:gray;font-size:13px;margin-bottom:15px">�܂��J�[�h���o�^����Ă��܂���</p>
             }
             @foreach (var card in Model.Cards)
             {
                 <div class="list-item">
                     <div class="list-item-info">
-                        <div class="name">💳 @card.Name</div>
-                        <div class="meta">締め日：@card.ClosingDay 日　引き落とし：@card.BillingDay 日</div>
+                        <div class="name">?? @card.Name</div>
+                        <div class="meta">���ߓ��F@card.ClosingDay ���@�������Ƃ��F@card.BillingDay ��</div>
                     </div>
                     <div class="list-item-actions">
                         <button class="btn-small btn-edit"
@@ -439,50 +439,50 @@
                                 data-closing="@card.ClosingDay"
                                 data-billing="@card.BillingDay"
                                 onclick="openEditCard(this)">
-                            ✏️ 編集
+                            ?? �ҏW
                         </button>
                         <button class="btn-small btn-danger"
                                 data-id="@card.Id"
                                 data-name="@card.Name"
                                 onclick="deleteCard(this)">
-                            🗑 削除
+                            ?? �폜
                         </button>
                     </div>
                 </div>
             }
 
-            {{/* カード追加フォーム */}}
+            @* �J�[�h�ǉ��t�H�[�� *@
             <div style="margin-top:15px;padding-top:15px;border-top:1px solid #eee">
                 <div class="form-group">
-                    <label>カード名</label>
-                    <input type="text" id="cardName" placeholder="例：楽天カード" />
+                    <label>�J�[�h��</label>
+                    <input type="text" id="cardName" placeholder="��F�y�V�J�[�h" />
                 </div>
                 <div class="form-group">
-                    <label>締め日</label>
-                    <input type="number" id="cardClosing" placeholder="例：15" min="1" max="31" />
+                    <label>���ߓ�</label>
+                    <input type="number" id="cardClosing" placeholder="��F15" min="1" max="31" />
                 </div>
                 <div class="form-group">
-                    <label>引き落とし日</label>
-                    <input type="number" id="cardBilling" placeholder="例：27" min="1" max="31" />
+                    <label>�������Ƃ���</label>
+                    <input type="number" id="cardBilling" placeholder="��F27" min="1" max="31" />
                 </div>
-                <button class="btn btn-primary" onclick="addCard()">➕ カードを追加</button>
+                <button class="btn btn-primary" onclick="addCard()">? �J�[�h��ǉ�</button>
             </div>
         </div>
 
-        {{/* 固定費管理 */}}
+        @* �Œ��Ǘ� *@
         <div class="card">
-            <h3>🔁 固定費管理</h3>
+            <h3>?? �Œ��Ǘ�</h3>
             @if (!Model.FixedExpenses.Any())
             {
-                <p style="color:gray;font-size:13px;margin-bottom:15px">まだ固定費が登録されていません</p>
+                <p style="color:gray;font-size:13px;margin-bottom:15px">�܂��Œ��o�^����Ă��܂���</p>
             }
             @foreach (var f in Model.FixedExpenses)
             {
                 <div class="list-item">
                     <div class="list-item-info">
-                        <div class="name">🔁 @f.Name</div>
+                        <div class="name">?? @f.Name</div>
                         <div class="meta">
-                            毎月 @f.DayOfMonth 日　¥@f.Amount.ToString("#,0")
+                            ���� @f.DayOfMonth ���@\@f.Amount.ToString("#,0")
                             @Model.GetCategoryName(f.CategoryId)
                         </div>
                     </div>
@@ -495,34 +495,34 @@
                                 data-category="@f.CategoryId"
                                 data-payment="@f.PaymentMethod"
                                 onclick="openEditFixed(this)">
-                            ✏️ 編集
+                            ?? �ҏW
                         </button>
                         <button class="btn-small btn-danger"
                                 data-id="@f.Id"
                                 data-name="@f.Name"
                                 onclick="deleteFixed(this)">
-                            🗑 削除
+                            ?? �폜
                         </button>
                     </div>
                 </div>
             }
 
-            {{/* 固定費追加フォーム */}}
+            @* �Œ��ǉ��t�H�[�� *@
             <div style="margin-top:15px;padding-top:15px;border-top:1px solid #eee">
                 <div class="form-group">
-                    <label>固定費名</label>
-                    <input type="text" id="fixedName" placeholder="例：家賃" />
+                    <label>�Œ�</label>
+                    <input type="text" id="fixedName" placeholder="��F�ƒ�" />
                 </div>
                 <div class="form-group">
-                    <label>金額（円）</label>
-                    <input type="number" id="fixedAmount" placeholder="例：80000" />
+                    <label>���z�i�~�j</label>
+                    <input type="number" id="fixedAmount" placeholder="��F80000" />
                 </div>
                 <div class="form-group">
-                    <label>毎月何日に計上</label>
-                    <input type="number" id="fixedDay" placeholder="例：1" min="1" max="31" />
+                    <label>���������Ɍv��</label>
+                    <input type="number" id="fixedDay" placeholder="��F1" min="1" max="31" />
                 </div>
                 <div class="form-group">
-                    <label>カテゴリ</label>
+                    <label>�J�e�S��</label>
                     <select id="fixedCategory">
                         @foreach (var c in Model.Categories)
                         {
@@ -531,16 +531,16 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>支払い方法</label>
+                    <label>�x�������@</label>
                     <select id="fixedPayment">
-                        <option value="Cash">💵 現金</option>
-                        <option value="Card">💳 カード</option>
-                        <option value="ElectronicMoney">📲 電子マネー</option>
-                        <option value="QRPayment">📱 QR決済</option>
-                        <option value="BankAccount">🏦 口座</option>
+                        <option value="Cash">?? ����</option>
+                        <option value="Card">?? �J�[�h</option>
+                        <option value="ElectronicMoney">?? �d�q�}�l�[</option>
+                        <option value="QRPayment">?? QR����</option>
+                        <option value="BankAccount">?? ����</option>
                     </select>
                 </div>
-                <button class="btn btn-primary" onclick="addFixed()">➕ 固定費を追加</button>
+                <button class="btn btn-primary" onclick="addFixed()">? �Œ���ǉ�</button>
             </div>
         </div>
     </div>
@@ -548,7 +548,7 @@
     <script>
             // =====================================================
             // showBanner(message, color)
-            // 成功バナーを表示する（2秒後に自動非表示）
+            // �����o�i�[��\������i2�b��Ɏ�����\���j
             // =====================================================
             function showBanner(message, color = '#3c9660') {
                 const banner = document.getElementById('banner');
@@ -559,16 +559,16 @@
             }
 
             // =====================================================
-            // モーダル操作
+            // ���[�_������
             // =====================================================
             function openModal(id)  { document.getElementById(id).classList.add('active'); }
             function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
             // =====================================================
-            // カテゴリ操作
+            // �J�e�S������
             // =====================================================
 
-            // data属性から値を取得してモーダルを開く
+            // data��������l���擾���ă��[�_�����J��
             function openEditCategory(btn) {
                 document.getElementById('editCatId').value     = btn.dataset.id;
                 document.getElementById('editCatName').value   = btn.dataset.name;
@@ -581,16 +581,16 @@
                 const name   = document.getElementById('catName').value.trim();
                 const icon   = document.getElementById('catIcon').value.trim();
                 const budget = parseInt(document.getElementById('catBudget').value) || 0;
-                if (!name) { alert('カテゴリ名を入力してください'); return; }
+                if (!name) { alert('�J�e�S��������͂��Ă�������'); return; }
 
                 const res  = await fetch('/api/kakeibo/category', {
                     method  : 'POST',
                     headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ name, icon: icon || '📦', budgetLimit: budget })
+                    body    : JSON.stringify({ name, icon: icon || '??', budgetLimit: budget })
                 });
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('エラーが発生しました'); }
+                else { alert('�G���[���������܂���'); }
             }
 
             async function updateCategory() {
@@ -598,34 +598,34 @@
                 const name   = document.getElementById('editCatName').value.trim();
                 const icon   = document.getElementById('editCatIcon').value.trim();
                 const budget = parseInt(document.getElementById('editCatBudget').value) || 0;
-                if (!name) { alert('カテゴリ名を入力してください'); return; }
+                if (!name) { alert('�J�e�S��������͂��Ă�������'); return; }
 
                 const res  = await fetch(`/api/kakeibo/category/${id}`, {
                     method  : 'PUT',
                     headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ name, icon: icon || '📦', budgetLimit: budget })
+                    body    : JSON.stringify({ name, icon: icon || '??', budgetLimit: budget })
                 });
                 const json = await res.json();
                 if (res.ok) {
                     closeModal('modalCategory');
                     showBanner(json.message);
                     setTimeout(() => location.reload(), 1000);
-                } else { alert('更新に失敗しました'); }
+                } else { alert('�X�V�Ɏ��s���܂���'); }
             }
 
             async function deleteCategory(btn) {
                 const id   = btn.dataset.id;
                 const name = btn.dataset.name;
-                if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+                if (!confirm(`�u${name}�v���폜���Ă��悢�ł����H\n���̑���͌��ɖ߂��܂���B`)) return;
 
                 const res  = await fetch(`/api/kakeibo/category/${id}`, { method: 'DELETE' });
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert(json.message || '削除に失敗しました'); }
+                else { alert(json.message || '�폜�Ɏ��s���܂���'); }
             }
 
             // =====================================================
-            // カード操作
+            // �J�[�h����
             // =====================================================
 
             function openEditCard(btn) {
@@ -640,7 +640,7 @@
                 const name    = document.getElementById('cardName').value.trim();
                 const closing = parseInt(document.getElementById('cardClosing').value);
                 const billing = parseInt(document.getElementById('cardBilling').value);
-                if (!name || !closing || !billing) { alert('全項目を入力してください'); return; }
+                if (!name || !closing || !billing) { alert('�S���ڂ���͂��Ă�������'); return; }
 
                 const res  = await fetch('/api/kakeibo/card', {
                     method  : 'POST',
@@ -649,7 +649,7 @@
                 });
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('エラーが発生しました'); }
+                else { alert('�G���[���������܂���'); }
             }
 
             async function updateCard() {
@@ -657,7 +657,7 @@
                 const name    = document.getElementById('editCardName').value.trim();
                 const closing = parseInt(document.getElementById('editCardClosing').value);
                 const billing = parseInt(document.getElementById('editCardBilling').value);
-                if (!name || !closing || !billing) { alert('全項目を入力してください'); return; }
+                if (!name || !closing || !billing) { alert('�S���ڂ���͂��Ă�������'); return; }
 
                 const res  = await fetch(`/api/kakeibo/card/${id}`, {
                     method  : 'PUT',
@@ -669,22 +669,22 @@
                     closeModal('modalCard');
                     showBanner(json.message);
                     setTimeout(() => location.reload(), 1000);
-                } else { alert('更新に失敗しました'); }
+                } else { alert('�X�V�Ɏ��s���܂���'); }
             }
 
             async function deleteCard(btn) {
                 const id   = btn.dataset.id;
                 const name = btn.dataset.name;
-                if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+                if (!confirm(`�u${name}�v���폜���Ă��悢�ł����H\n���̑���͌��ɖ߂��܂���B`)) return;
 
                 const res  = await fetch(`/api/kakeibo/card/${id}`, { method: 'DELETE' });
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('削除に失敗しました'); }
+                else { alert('�폜�Ɏ��s���܂���'); }
             }
 
             // =====================================================
-            // 固定費操作
+            // �Œ���
             // =====================================================
 
             function openEditFixed(btn) {
@@ -703,7 +703,7 @@
                 const day        = parseInt(document.getElementById('fixedDay').value);
                 const categoryId = document.getElementById('fixedCategory').value;
                 const payment    = document.getElementById('fixedPayment').value;
-                if (!name || !amount || !day) { alert('全項目を入力してください'); return; }
+                if (!name || !amount || !day) { alert('�S���ڂ���͂��Ă�������'); return; }
 
                 const res  = await fetch('/api/kakeibo/fixed', {
                     method  : 'POST',
@@ -712,7 +712,7 @@
                 });
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('エラーが発生しました'); }
+                else { alert('�G���[���������܂���'); }
             }
 
             async function updateFixed() {
@@ -722,7 +722,7 @@
                 const day        = parseInt(document.getElementById('editFixedDay').value);
                 const categoryId = document.getElementById('editFixedCategory').value;
                 const payment    = document.getElementById('editFixedPayment').value;
-                if (!name || !amount || !day) { alert('全項目を入力してください'); return; }
+                if (!name || !amount || !day) { alert('�S���ڂ���͂��Ă�������'); return; }
 
                 const res  = await fetch(`/api/kakeibo/fixed/${id}`, {
                     method  : 'PUT',
@@ -734,18 +734,18 @@
                     closeModal('modalFixed');
                     showBanner(json.message);
                     setTimeout(() => location.reload(), 1000);
-                } else { alert('更新に失敗しました'); }
+                } else { alert('�X�V�Ɏ��s���܂���'); }
             }
 
             async function deleteFixed(btn) {
                 const id   = btn.dataset.id;
                 const name = btn.dataset.name;
-                if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+                if (!confirm(`�u${name}�v���폜���Ă��悢�ł����H\n���̑���͌��ɖ߂��܂���B`)) return;
 
                 const res  = await fetch(`/api/kakeibo/fixed/${id}`, { method: 'DELETE' });
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('削除に失敗しました'); }
+                else { alert('�폜�Ɏ��s���܂���'); }
             }
     </script>
 </body>
