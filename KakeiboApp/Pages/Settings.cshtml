@@ -1,0 +1,783 @@
+﻿@page
+@model KakeiboApp.Pages.SettingsModel
+@{
+    ViewData["Title"] = "設定";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>設定</title>
+    <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'メイリオ', sans-serif;
+                background: #f0f2f8;
+                color: #333;
+                padding-bottom: 20px;
+            }
+
+            .header {
+                background: #2a3c78;
+                color: white;
+                padding: 12px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .header-title {
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .header-nav {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .nav-link {
+                color: white;
+                text-decoration: none;
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 13px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+            }
+
+                .nav-link:hover {
+                    background: rgba(255,255,255,0.15);
+                }
+
+                .nav-link.active {
+                    background: rgba(255,255,255,0.25);
+                }
+
+                .nav-link span {
+                    font-size: 18px;
+                }
+
+                .nav-link small {
+                    font-size: 10px;
+                }
+
+            .container {
+                padding: 15px;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .card {
+                background: white;
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            }
+
+                .card h3 {
+                    font-size: 14px;
+                    color: #2a3c78;
+                    margin-bottom: 15px;
+                }
+
+            .form-group {
+                margin-bottom: 12px;
+            }
+
+                .form-group label {
+                    display: block;
+                    font-size: 12px;
+                    font-weight: bold;
+                    color: gray;
+                    margin-bottom: 5px;
+                }
+
+                .form-group input, .form-group select {
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    font-size: 14px;
+                }
+
+            .btn {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 8px;
+                font-size: 13px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .btn-primary {
+                background: #2a3c78;
+                color: white;
+                width: 100%;
+                padding: 12px;
+            }
+
+            .btn-danger {
+                background: #dc4646;
+                color: white;
+            }
+
+            .btn-edit {
+                background: #4682dc;
+                color: white;
+            }
+
+            .btn-small {
+                padding: 5px 10px;
+                font-size: 12px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                color: white;
+            }
+
+            /* 一覧アイテム */
+            .list-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 0;
+                border-bottom: 1px solid #f0f0f0;
+                font-size: 13px;
+            }
+
+                .list-item:last-child {
+                    border-bottom: none;
+                }
+
+            .list-item-info {
+                flex: 1;
+            }
+
+                .list-item-info .name {
+                    font-weight: bold;
+                    font-size: 14px;
+                }
+
+                .list-item-info .meta {
+                    font-size: 11px;
+                    color: gray;
+                    margin-top: 2px;
+                }
+
+            .list-item-actions {
+                display: flex;
+                gap: 6px;
+            }
+
+            /* カテゴリグリッド */
+            .category-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                margin-bottom: 15px;
+            }
+
+            .cat-item {
+                background: #f8f8ff;
+                border-radius: 8px;
+                padding: 8px;
+                text-align: center;
+                font-size: 12px;
+            }
+
+                .cat-item .icon {
+                    font-size: 20px;
+                    margin-bottom: 3px;
+                }
+
+            /* 成功バナー */
+            .banner {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #3c9660;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: bold;
+                z-index: 999;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+
+            /* モーダル（編集ダイアログ） */
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 200;
+            }
+
+            .modal {
+                background: white;
+                border-radius: 12px;
+                padding: 20px;
+                margin: 50px 15px;
+            }
+
+                .modal h3 {
+                    font-size: 16px;
+                    color: #2a3c78;
+                    margin-bottom: 15px;
+                }
+
+            .modal-buttons {
+                display: flex;
+                gap: 10px;
+                margin-top: 15px;
+            }
+
+                .modal-buttons button {
+                    flex: 1;
+                    padding: 12px;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+
+            .btn-cancel {
+                background: #eee;
+                color: #333;
+            }
+
+            .btn-save {
+                background: #2a3c78;
+                color: white;
+            }
+    </style>
+</head>
+<body>
+
+    <div id="banner" class="banner"></div>
+
+    @*
+    =====================================================
+    編集モーダル（カテゴリ）
+    =====================================================
+    *@
+    <div class="modal-overlay" id="modalCategory">
+        <div class="modal">
+            <h3>📂 カテゴリを編集</h3>
+            <input type="hidden" id="editCatId" />
+            <div class="form-group">
+                <label>カテゴリ名</label>
+                <input type="text" id="editCatName" />
+            </div>
+            <div class="form-group">
+                <label>アイコン（絵文字）</label>
+                <input type="text" id="editCatIcon" maxlength="2" />
+            </div>
+            <div class="form-group">
+                <label>予算上限（円）</label>
+                <input type="number" id="editCatBudget" />
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal('modalCategory')">キャンセル</button>
+                <button class="btn-save" onclick="updateCategory()">更新する</button>
+            </div>
+        </div>
+    </div>
+
+    @* 編集モーダル（カード） *@
+    <div class="modal-overlay" id="modalCard">
+        <div class="modal">
+            <h3>💳 カードを編集</h3>
+            <input type="hidden" id="editCardId" />
+            <div class="form-group">
+                <label>カード名</label>
+                <input type="text" id="editCardName" />
+            </div>
+            <div class="form-group">
+                <label>締め日</label>
+                <input type="number" id="editCardClosing" min="1" max="31" />
+            </div>
+            <div class="form-group">
+                <label>引き落とし日</label>
+                <input type="number" id="editCardBilling" min="1" max="31" />
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal('modalCard')">キャンセル</button>
+                <button class="btn-save" onclick="updateCard()">更新する</button>
+            </div>
+        </div>
+    </div>
+
+    @* 編集モーダル（固定費） *@
+    <div class="modal-overlay" id="modalFixed">
+        <div class="modal">
+            <h3>🔁 固定費を編集</h3>
+            <input type="hidden" id="editFixedId" />
+            <div class="form-group">
+                <label>固定費名</label>
+                <input type="text" id="editFixedName" />
+            </div>
+            <div class="form-group">
+                <label>金額（円）</label>
+                <input type="number" id="editFixedAmount" />
+            </div>
+            <div class="form-group">
+                <label>毎月何日に計上</label>
+                <input type="number" id="editFixedDay" min="1" max="31" />
+            </div>
+            <div class="form-group">
+                <label>カテゴリ</label>
+                <select id="editFixedCategory">
+                    @foreach (var c in Model.Categories)
+                    {
+                        <option value="@c.Id">@c.Icon @c.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>支払い方法</label>
+                <select id="editFixedPayment">
+                    <option value="Cash">💵 現金</option>
+                    <option value="Card">💳 カード</option>
+                    <option value="ElectronicMoney">📲 電子マネー</option>
+                    <option value="QRPayment">📱 QR決済</option>
+                    <option value="BankAccount">🏦 口座</option>
+                </select>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal('modalFixed')">キャンセル</button>
+                <button class="btn-save" onclick="updateFixed()">更新する</button>
+            </div>
+        </div>
+    </div>
+
+    @*
+    =====================================================
+    共通ヘッダー
+    =====================================================
+    *@
+    <div class="header">
+        <div class="header-title">⚙️ 設定</div>
+        <div class="header-nav">
+            <a href="/" class="nav-link"><span>🏠</span><small>ホーム</small></a>
+            <a href="/Report" class="nav-link"><span>📊</span><small>レポート</small></a>
+            <a href="/Settings" class="nav-link active"><span>⚙️</span><small>設定</small></a>
+        </div>
+    </div>
+
+    <div class="container">
+
+        @*
+        =====================================================
+        カテゴリ管理
+        デフォルトカテゴリ（IsDefault=true）は削除不可
+        =====================================================
+        *@
+        <div class="card">
+            <h3>📂 カテゴリ管理</h3>
+
+            @* 登録済みカテゴリ一覧 *@
+            @foreach (var c in Model.Categories)
+            {
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="name">@c.Icon @c.Name</div>
+                        <div class="meta">
+                            予算：@(c.BudgetLimit > 0 ? $"¥{c.BudgetLimit:#,0}" : "設定なし")
+                            @(c.IsDefault ? "（デフォルト）" : "")
+                        </div>
+                    </div>
+                    <div class="list-item-actions">
+                        @* 編集ボタン *@
+                        <button class="btn-small btn-edit"
+                                onclick="openEditCategory('@c.Id', '@c.Name', '@c.Icon', @c.BudgetLimit)">
+                            ✏️ 編集
+                        </button>
+                        @* 削除ボタン（デフォルトカテゴリは非表示） *@
+                        @if (!c.IsDefault)
+                        {
+                            <button class="btn-small btn-danger"
+                                    onclick="deleteCategory('@c.Id', '@c.Name')">
+                                🗑 削除
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+
+            @* カテゴリ追加フォーム *@
+            <div style="margin-top:15px;padding-top:15px;border-top:1px solid #eee">
+                <div class="form-group">
+                    <label>カテゴリ名</label>
+                    <input type="text" id="catName" placeholder="例：ペット費" />
+                </div>
+                <div class="form-group">
+                    <label>アイコン（絵文字）</label>
+                    <input type="text" id="catIcon" placeholder="例：🐶" maxlength="2" />
+                </div>
+                <div class="form-group">
+                    <label>予算上限（円）</label>
+                    <input type="number" id="catBudget" placeholder="例：10000" />
+                </div>
+                <button class="btn btn-primary" onclick="addCategory()">➕ カテゴリを追加</button>
+            </div>
+        </div>
+
+        @*
+        =====================================================
+        カード管理
+        =====================================================
+        *@
+        <div class="card">
+            <h3>💳 カード管理</h3>
+
+            @* 登録済みカード一覧 *@
+            @if (!Model.Cards.Any())
+            {
+                <p style="color:gray;font-size:13px;margin-bottom:15px">まだカードが登録されていません</p>
+            }
+            @foreach (var card in Model.Cards)
+            {
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="name">💳 @card.Name</div>
+                        <div class="meta">締め日：@card.ClosingDay 日　引き落とし：@card.BillingDay 日</div>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="btn-small btn-edit"
+                                onclick="openEditCard('@card.Id', '@card.Name', @card.ClosingDay, @card.BillingDay)">
+                            ✏️ 編集
+                        </button>
+                        <button class="btn-small btn-danger"
+                                onclick="deleteCard('@card.Id', '@card.Name')">
+                            🗑 削除
+                        </button>
+                    </div>
+                </div>
+            }
+
+            @* カード追加フォーム *@
+            <div style="margin-top:15px;padding-top:15px;border-top:1px solid #eee">
+                <div class="form-group">
+                    <label>カード名</label>
+                    <input type="text" id="cardName" placeholder="例：楽天カード" />
+                </div>
+                <div class="form-group">
+                    <label>締め日</label>
+                    <input type="number" id="cardClosing" placeholder="例：15" min="1" max="31" />
+                </div>
+                <div class="form-group">
+                    <label>引き落とし日</label>
+                    <input type="number" id="cardBilling" placeholder="例：27" min="1" max="31" />
+                </div>
+                <button class="btn btn-primary" onclick="addCard()">➕ カードを追加</button>
+            </div>
+        </div>
+
+        @*
+        =====================================================
+        固定費管理
+        =====================================================
+        *@
+        <div class="card">
+            <h3>🔁 固定費管理</h3>
+
+            @* 登録済み固定費一覧 *@
+            @if (!Model.FixedExpenses.Any())
+            {
+                <p style="color:gray;font-size:13px;margin-bottom:15px">まだ固定費が登録されていません</p>
+            }
+            @foreach (var f in Model.FixedExpenses)
+            {
+                <div class="list-item">
+                    <div class="list-item-info">
+                        <div class="name">🔁 @f.Name</div>
+                        <div class="meta">
+                            毎月 @f.DayOfMonth 日　¥@f.Amount.ToString("#,0")
+                            @Model.GetCategoryName(f.CategoryId)
+                        </div>
+                    </div>
+                    <div class="list-item-actions">
+                        <button class="btn-small btn-edit"
+                                onclick="openEditFixed('@f.Id', '@f.Name', @f.Amount, @f.DayOfMonth, '@f.CategoryId', '@f.PaymentMethod')">
+                            ✏️ 編集
+                        </button>
+                        <button class="btn-small btn-danger"
+                                onclick="deleteFixed('@f.Id', '@f.Name')">
+                            🗑 削除
+                        </button>
+                    </div>
+                </div>
+            }
+
+            @* 固定費追加フォーム *@
+            <div style="margin-top:15px;padding-top:15px;border-top:1px solid #eee">
+                <div class="form-group">
+                    <label>固定費名</label>
+                    <input type="text" id="fixedName" placeholder="例：家賃" />
+                </div>
+                <div class="form-group">
+                    <label>金額（円）</label>
+                    <input type="number" id="fixedAmount" placeholder="例：80000" />
+                </div>
+                <div class="form-group">
+                    <label>毎月何日に計上</label>
+                    <input type="number" id="fixedDay" placeholder="例：1" min="1" max="31" />
+                </div>
+                <div class="form-group">
+                    <label>カテゴリ</label>
+                    <select id="fixedCategory">
+                        @foreach (var c in Model.Categories)
+                        {
+                            <option value="@c.Id">@c.Icon @c.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>支払い方法</label>
+                    <select id="fixedPayment">
+                        <option value="Cash">💵 現金</option>
+                        <option value="Card">💳 カード</option>
+                        <option value="ElectronicMoney">📲 電子マネー</option>
+                        <option value="QRPayment">📱 QR決済</option>
+                        <option value="BankAccount">🏦 口座</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="addFixed()">➕ 固定費を追加</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            // =====================================================
+            // showBanner(message, color)
+            // 成功バナーを表示する（2秒後に自動非表示）
+            // =====================================================
+            function showBanner(message, color = '#3c9660') {
+                const banner = document.getElementById('banner');
+                banner.textContent    = message;
+                banner.style.background = color;
+                banner.style.display  = 'block';
+                setTimeout(() => banner.style.display = 'none', 2000);
+            }
+
+            // =====================================================
+            // モーダル操作
+            // =====================================================
+
+            /// モーダルを開く
+            function openModal(id)  { document.getElementById(id).style.display = 'block'; }
+
+            /// モーダルを閉じる
+            function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+            // =====================================================
+            // カテゴリ操作
+            // =====================================================
+
+            /// カテゴリ編集モーダルを開いて既存データを反映する
+            function openEditCategory(id, name, icon, budget) {
+                document.getElementById('editCatId').value     = id;
+                document.getElementById('editCatName').value   = name;
+                document.getElementById('editCatIcon').value   = icon;
+                document.getElementById('editCatBudget').value = budget;
+                openModal('modalCategory');
+            }
+
+            /// カテゴリを追加する
+            async function addCategory() {
+                const name   = document.getElementById('catName').value.trim();
+                const icon   = document.getElementById('catIcon').value.trim();
+                const budget = parseInt(document.getElementById('catBudget').value) || 0;
+                if (!name) { alert('カテゴリ名を入力してください'); return; }
+
+                const res  = await fetch('/api/kakeibo/category', {
+                    method  : 'POST',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ name, icon: icon || '📦', budgetLimit: budget })
+                });
+                const json = await res.json();
+                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+                else { alert('エラーが発生しました'); }
+            }
+
+            /// カテゴリを更新する
+            async function updateCategory() {
+                const id     = document.getElementById('editCatId').value;
+                const name   = document.getElementById('editCatName').value.trim();
+                const icon   = document.getElementById('editCatIcon').value.trim();
+                const budget = parseInt(document.getElementById('editCatBudget').value) || 0;
+                if (!name) { alert('カテゴリ名を入力してください'); return; }
+
+                const res  = await fetch(`/api/kakeibo/category/${id}`, {
+                    method  : 'PUT',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ name, icon: icon || '📦', budgetLimit: budget })
+                });
+                const json = await res.json();
+                if (res.ok) {
+                    closeModal('modalCategory');
+                    showBanner(json.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else { alert('更新に失敗しました'); }
+            }
+
+            /// カテゴリを削除する（確認ダイアログあり）
+            async function deleteCategory(id, name) {
+                if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+                const res  = await fetch(`/api/kakeibo/category/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+                else { alert(json.message || '削除に失敗しました'); }
+            }
+
+            // =====================================================
+            // カード操作
+            // =====================================================
+
+            /// カード編集モーダルを開く
+            function openEditCard(id, name, closing, billing) {
+                document.getElementById('editCardId').value      = id;
+                document.getElementById('editCardName').value    = name;
+                document.getElementById('editCardClosing').value = closing;
+                document.getElementById('editCardBilling').value = billing;
+                openModal('modalCard');
+            }
+
+            /// カードを追加する
+            async function addCard() {
+                const name    = document.getElementById('cardName').value.trim();
+                const closing = parseInt(document.getElementById('cardClosing').value);
+                const billing = parseInt(document.getElementById('cardBilling').value);
+                if (!name || !closing || !billing) { alert('全項目を入力してください'); return; }
+
+                const res  = await fetch('/api/kakeibo/card', {
+                    method  : 'POST',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ name, closingDay: closing, billingDay: billing })
+                });
+                const json = await res.json();
+                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+                else { alert('エラーが発生しました'); }
+            }
+
+            /// カードを更新する
+            async function updateCard() {
+                const id      = document.getElementById('editCardId').value;
+                const name    = document.getElementById('editCardName').value.trim();
+                const closing = parseInt(document.getElementById('editCardClosing').value);
+                const billing = parseInt(document.getElementById('editCardBilling').value);
+                if (!name || !closing || !billing) { alert('全項目を入力してください'); return; }
+
+                const res  = await fetch(`/api/kakeibo/card/${id}`, {
+                    method  : 'PUT',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ name, closingDay: closing, billingDay: billing })
+                });
+                const json = await res.json();
+                if (res.ok) {
+                    closeModal('modalCard');
+                    showBanner(json.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else { alert('更新に失敗しました'); }
+            }
+
+            /// カードを削除する（確認ダイアログあり）
+            async function deleteCard(id, name) {
+                if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+                const res  = await fetch(`/api/kakeibo/card/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+                else { alert('削除に失敗しました'); }
+            }
+
+            // =====================================================
+            // 固定費操作
+            // =====================================================
+
+            /// 固定費編集モーダルを開く
+            function openEditFixed(id, name, amount, day, categoryId, payment) {
+                document.getElementById('editFixedId').value       = id;
+                document.getElementById('editFixedName').value     = name;
+                document.getElementById('editFixedAmount').value   = amount;
+                document.getElementById('editFixedDay').value      = day;
+                document.getElementById('editFixedCategory').value = categoryId;
+                document.getElementById('editFixedPayment').value  = payment;
+                openModal('modalFixed');
+            }
+
+            /// 固定費を追加する
+            async function addFixed() {
+                const name       = document.getElementById('fixedName').value.trim();
+                const amount     = parseInt(document.getElementById('fixedAmount').value);
+                const day        = parseInt(document.getElementById('fixedDay').value);
+                const categoryId = document.getElementById('fixedCategory').value;
+                const payment    = document.getElementById('fixedPayment').value;
+                if (!name || !amount || !day) { alert('全項目を入力してください'); return; }
+
+                const res  = await fetch('/api/kakeibo/fixed', {
+                    method  : 'POST',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ name, amount, dayOfMonth: day, categoryId, paymentMethod: payment })
+                });
+                const json = await res.json();
+                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+                else { alert('エラーが発生しました'); }
+            }
+
+            /// 固定費を更新する
+            async function updateFixed() {
+                const id         = document.getElementById('editFixedId').value;
+                const name       = document.getElementById('editFixedName').value.trim();
+                const amount     = parseInt(document.getElementById('editFixedAmount').value);
+                const day        = parseInt(document.getElementById('editFixedDay').value);
+                const categoryId = document.getElementById('editFixedCategory').value;
+                const payment    = document.getElementById('editFixedPayment').value;
+                if (!name || !amount || !day) { alert('全項目を入力してください'); return; }
+
+                const res  = await fetch(`/api/kakeibo/fixed/${id}`, {
+                    method  : 'PUT',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ name, amount, dayOfMonth: day, categoryId, paymentMethod: payment })
+                });
+                const json = await res.json();
+                if (res.ok) {
+                    closeModal('modalFixed');
+                    showBanner(json.message);
+                    setTimeout(() => location.reload(), 1000);
+                } else { alert('更新に失敗しました'); }
+            }
+
+            /// 固定費を削除する（確認ダイアログあり）
+            async function deleteFixed(id, name) {
+                if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+                const res  = await fetch(`/api/kakeibo/fixed/${id}`, { method: 'DELETE' });
+                const json = await res.json();
+                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+                else { alert('削除に失敗しました'); }
+            }
+    </script>
+</body>
+</html>
