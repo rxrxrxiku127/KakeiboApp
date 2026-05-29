@@ -150,7 +150,6 @@
                 color: white;
             }
 
-            /* 一覧アイテム */
             .list-item {
                 display: flex;
                 justify-content: space-between;
@@ -184,28 +183,6 @@
                 gap: 6px;
             }
 
-            /* カテゴリグリッド */
-            .category-grid {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 8px;
-                margin-bottom: 15px;
-            }
-
-            .cat-item {
-                background: #f8f8ff;
-                border-radius: 8px;
-                padding: 8px;
-                text-align: center;
-                font-size: 12px;
-            }
-
-                .cat-item .icon {
-                    font-size: 20px;
-                    margin-bottom: 3px;
-                }
-
-            /* 成功バナー */
             .banner {
                 display: none;
                 position: fixed;
@@ -222,7 +199,6 @@
                 box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             }
 
-            /* モーダル（編集ダイアログ） */
             .modal-overlay {
                 display: none;
                 position: fixed;
@@ -232,13 +208,20 @@
                 bottom: 0;
                 background: rgba(0,0,0,0.5);
                 z-index: 200;
+                justify-content: center;
+                align-items: center;
             }
+
+                .modal-overlay.active {
+                    display: flex;
+                }
 
             .modal {
                 background: white;
                 border-radius: 12px;
                 padding: 20px;
-                margin: 50px 15px;
+                width: 90%;
+                max-width: 400px;
             }
 
                 .modal h3 {
@@ -278,11 +261,7 @@
 
     <div id="banner" class="banner"></div>
 
-    @*
-    =====================================================
-    編集モーダル（カテゴリ）
-    =====================================================
-    *@
+    {{/* カテゴリ編集モーダル */}}
     <div class="modal-overlay" id="modalCategory">
         <div class="modal">
             <h3>📂 カテゴリを編集</h3>
@@ -306,7 +285,7 @@
         </div>
     </div>
 
-    @* 編集モーダル（カード） *@
+    {{/* カード編集モーダル */}}
     <div class="modal-overlay" id="modalCard">
         <div class="modal">
             <h3>💳 カードを編集</h3>
@@ -330,7 +309,7 @@
         </div>
     </div>
 
-    @* 編集モーダル（固定費） *@
+    {{/* 固定費編集モーダル */}}
     <div class="modal-overlay" id="modalFixed">
         <div class="modal">
             <h3>🔁 固定費を編集</h3>
@@ -373,11 +352,7 @@
         </div>
     </div>
 
-    @*
-    =====================================================
-    共通ヘッダー
-    =====================================================
-    *@
+    {{/* 共通ヘッダー */}}
     <div class="header">
         <div class="header-title">⚙️ 設定</div>
         <div class="header-nav">
@@ -389,16 +364,9 @@
 
     <div class="container">
 
-        @*
-        =====================================================
-        カテゴリ管理
-        デフォルトカテゴリ（IsDefault=true）は削除不可
-        =====================================================
-        *@
+        {{/* カテゴリ管理 */}}
         <div class="card">
             <h3>📂 カテゴリ管理</h3>
-
-            @* 登録済みカテゴリ一覧 *@
             @foreach (var c in Model.Categories)
             {
                 <div class="list-item">
@@ -410,16 +378,21 @@
                         </div>
                     </div>
                     <div class="list-item-actions">
-                        @* 編集ボタン *@
+                        {{/* data属性で値を渡すことで絵文字の問題を回避 */}}
                         <button class="btn-small btn-edit"
-                                onclick="openEditCategory('@c.Id', '@c.Name', '@c.Icon', @c.BudgetLimit)">
+                                data-id="@c.Id"
+                                data-name="@c.Name"
+                                data-icon="@c.Icon"
+                                data-budget="@c.BudgetLimit"
+                                onclick="openEditCategory(this)">
                             ✏️ 編集
                         </button>
-                        @* 削除ボタン（デフォルトカテゴリは非表示） *@
                         @if (!c.IsDefault)
                         {
                             <button class="btn-small btn-danger"
-                                    onclick="deleteCategory('@c.Id', '@c.Name')">
+                                    data-id="@c.Id"
+                                    data-name="@c.Name"
+                                    onclick="deleteCategory(this)">
                                 🗑 削除
                             </button>
                         }
@@ -427,7 +400,7 @@
                 </div>
             }
 
-            @* カテゴリ追加フォーム *@
+            {{/* カテゴリ追加フォーム */}}
             <div style="margin-top:15px;padding-top:15px;border-top:1px solid #eee">
                 <div class="form-group">
                     <label>カテゴリ名</label>
@@ -445,15 +418,9 @@
             </div>
         </div>
 
-        @*
-        =====================================================
-        カード管理
-        =====================================================
-        *@
+        {{/* カード管理 */}}
         <div class="card">
             <h3>💳 カード管理</h3>
-
-            @* 登録済みカード一覧 *@
             @if (!Model.Cards.Any())
             {
                 <p style="color:gray;font-size:13px;margin-bottom:15px">まだカードが登録されていません</p>
@@ -467,18 +434,24 @@
                     </div>
                     <div class="list-item-actions">
                         <button class="btn-small btn-edit"
-                                onclick="openEditCard('@card.Id', '@card.Name', @card.ClosingDay, @card.BillingDay)">
+                                data-id="@card.Id"
+                                data-name="@card.Name"
+                                data-closing="@card.ClosingDay"
+                                data-billing="@card.BillingDay"
+                                onclick="openEditCard(this)">
                             ✏️ 編集
                         </button>
                         <button class="btn-small btn-danger"
-                                onclick="deleteCard('@card.Id', '@card.Name')">
+                                data-id="@card.Id"
+                                data-name="@card.Name"
+                                onclick="deleteCard(this)">
                             🗑 削除
                         </button>
                     </div>
                 </div>
             }
 
-            @* カード追加フォーム *@
+            {{/* カード追加フォーム */}}
             <div style="margin-top:15px;padding-top:15px;border-top:1px solid #eee">
                 <div class="form-group">
                     <label>カード名</label>
@@ -496,15 +469,9 @@
             </div>
         </div>
 
-        @*
-        =====================================================
-        固定費管理
-        =====================================================
-        *@
+        {{/* 固定費管理 */}}
         <div class="card">
             <h3>🔁 固定費管理</h3>
-
-            @* 登録済み固定費一覧 *@
             @if (!Model.FixedExpenses.Any())
             {
                 <p style="color:gray;font-size:13px;margin-bottom:15px">まだ固定費が登録されていません</p>
@@ -521,18 +488,26 @@
                     </div>
                     <div class="list-item-actions">
                         <button class="btn-small btn-edit"
-                                onclick="openEditFixed('@f.Id', '@f.Name', @f.Amount, @f.DayOfMonth, '@f.CategoryId', '@f.PaymentMethod')">
+                                data-id="@f.Id"
+                                data-name="@f.Name"
+                                data-amount="@f.Amount"
+                                data-day="@f.DayOfMonth"
+                                data-category="@f.CategoryId"
+                                data-payment="@f.PaymentMethod"
+                                onclick="openEditFixed(this)">
                             ✏️ 編集
                         </button>
                         <button class="btn-small btn-danger"
-                                onclick="deleteFixed('@f.Id', '@f.Name')">
+                                data-id="@f.Id"
+                                data-name="@f.Name"
+                                onclick="deleteFixed(this)">
                             🗑 削除
                         </button>
                     </div>
                 </div>
             }
 
-            @* 固定費追加フォーム *@
+            {{/* 固定費追加フォーム */}}
             <div style="margin-top:15px;padding-top:15px;border-top:1px solid #eee">
                 <div class="form-group">
                     <label>固定費名</label>
@@ -577,36 +552,31 @@
             // =====================================================
             function showBanner(message, color = '#3c9660') {
                 const banner = document.getElementById('banner');
-                banner.textContent    = message;
+                banner.textContent      = message;
                 banner.style.background = color;
-                banner.style.display  = 'block';
+                banner.style.display    = 'block';
                 setTimeout(() => banner.style.display = 'none', 2000);
             }
 
             // =====================================================
             // モーダル操作
             // =====================================================
-
-            /// モーダルを開く
-            function openModal(id)  { document.getElementById(id).style.display = 'block'; }
-
-            /// モーダルを閉じる
-            function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+            function openModal(id)  { document.getElementById(id).classList.add('active'); }
+            function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
             // =====================================================
             // カテゴリ操作
             // =====================================================
 
-            /// カテゴリ編集モーダルを開いて既存データを反映する
-            function openEditCategory(id, name, icon, budget) {
-                document.getElementById('editCatId').value     = id;
-                document.getElementById('editCatName').value   = name;
-                document.getElementById('editCatIcon').value   = icon;
-                document.getElementById('editCatBudget').value = budget;
+            // data属性から値を取得してモーダルを開く
+            function openEditCategory(btn) {
+                document.getElementById('editCatId').value     = btn.dataset.id;
+                document.getElementById('editCatName').value   = btn.dataset.name;
+                document.getElementById('editCatIcon').value   = btn.dataset.icon;
+                document.getElementById('editCatBudget').value = btn.dataset.budget;
                 openModal('modalCategory');
             }
 
-            /// カテゴリを追加する
             async function addCategory() {
                 const name   = document.getElementById('catName').value.trim();
                 const icon   = document.getElementById('catIcon').value.trim();
@@ -623,7 +593,6 @@
                 else { alert('エラーが発生しました'); }
             }
 
-            /// カテゴリを更新する
             async function updateCategory() {
                 const id     = document.getElementById('editCatId').value;
                 const name   = document.getElementById('editCatName').value.trim();
@@ -644,9 +613,11 @@
                 } else { alert('更新に失敗しました'); }
             }
 
-            /// カテゴリを削除する（確認ダイアログあり）
-            async function deleteCategory(id, name) {
+            async function deleteCategory(btn) {
+                const id   = btn.dataset.id;
+                const name = btn.dataset.name;
                 if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+
                 const res  = await fetch(`/api/kakeibo/category/${id}`, { method: 'DELETE' });
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
@@ -657,16 +628,14 @@
             // カード操作
             // =====================================================
 
-            /// カード編集モーダルを開く
-            function openEditCard(id, name, closing, billing) {
-                document.getElementById('editCardId').value      = id;
-                document.getElementById('editCardName').value    = name;
-                document.getElementById('editCardClosing').value = closing;
-                document.getElementById('editCardBilling').value = billing;
+            function openEditCard(btn) {
+                document.getElementById('editCardId').value      = btn.dataset.id;
+                document.getElementById('editCardName').value    = btn.dataset.name;
+                document.getElementById('editCardClosing').value = btn.dataset.closing;
+                document.getElementById('editCardBilling').value = btn.dataset.billing;
                 openModal('modalCard');
             }
 
-            /// カードを追加する
             async function addCard() {
                 const name    = document.getElementById('cardName').value.trim();
                 const closing = parseInt(document.getElementById('cardClosing').value);
@@ -683,7 +652,6 @@
                 else { alert('エラーが発生しました'); }
             }
 
-            /// カードを更新する
             async function updateCard() {
                 const id      = document.getElementById('editCardId').value;
                 const name    = document.getElementById('editCardName').value.trim();
@@ -704,9 +672,11 @@
                 } else { alert('更新に失敗しました'); }
             }
 
-            /// カードを削除する（確認ダイアログあり）
-            async function deleteCard(id, name) {
+            async function deleteCard(btn) {
+                const id   = btn.dataset.id;
+                const name = btn.dataset.name;
                 if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+
                 const res  = await fetch(`/api/kakeibo/card/${id}`, { method: 'DELETE' });
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
@@ -717,18 +687,16 @@
             // 固定費操作
             // =====================================================
 
-            /// 固定費編集モーダルを開く
-            function openEditFixed(id, name, amount, day, categoryId, payment) {
-                document.getElementById('editFixedId').value       = id;
-                document.getElementById('editFixedName').value     = name;
-                document.getElementById('editFixedAmount').value   = amount;
-                document.getElementById('editFixedDay').value      = day;
-                document.getElementById('editFixedCategory').value = categoryId;
-                document.getElementById('editFixedPayment').value  = payment;
+            function openEditFixed(btn) {
+                document.getElementById('editFixedId').value       = btn.dataset.id;
+                document.getElementById('editFixedName').value     = btn.dataset.name;
+                document.getElementById('editFixedAmount').value   = btn.dataset.amount;
+                document.getElementById('editFixedDay').value      = btn.dataset.day;
+                document.getElementById('editFixedCategory').value = btn.dataset.category;
+                document.getElementById('editFixedPayment').value  = btn.dataset.payment;
                 openModal('modalFixed');
             }
 
-            /// 固定費を追加する
             async function addFixed() {
                 const name       = document.getElementById('fixedName').value.trim();
                 const amount     = parseInt(document.getElementById('fixedAmount').value);
@@ -747,7 +715,6 @@
                 else { alert('エラーが発生しました'); }
             }
 
-            /// 固定費を更新する
             async function updateFixed() {
                 const id         = document.getElementById('editFixedId').value;
                 const name       = document.getElementById('editFixedName').value.trim();
@@ -770,9 +737,11 @@
                 } else { alert('更新に失敗しました'); }
             }
 
-            /// 固定費を削除する（確認ダイアログあり）
-            async function deleteFixed(id, name) {
+            async function deleteFixed(btn) {
+                const id   = btn.dataset.id;
+                const name = btn.dataset.name;
                 if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+
                 const res  = await fetch(`/api/kakeibo/fixed/${id}`, { method: 'DELETE' });
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
