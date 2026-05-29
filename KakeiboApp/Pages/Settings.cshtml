@@ -383,14 +383,9 @@
                     </div>
                     <div class="list-item-actions">
                         @* 編集ボタン：data属性で値を渡す *@
-                        <button class="btn-small btn-edit"
-                                data-id="@c.Id"
-                                data-name="@c.Name"
-                                data-icon="@c.Icon"
-                                data-budget="@c.BudgetLimit"
-                                onclick="openEditCategory(this)">
+                        <a href="/EditCategory?id=@c.Id" class="btn-small btn-edit" style="text-decoration:none">
                             ✏️ 編集
-                        </button>
+                        </a>
                         @* 削除ボタン：デフォルトカテゴリは非表示 *@
                         @if (!c.IsDefault)
                         {
