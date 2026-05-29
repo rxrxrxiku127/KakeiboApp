@@ -1,21 +1,26 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Diagnostics;
+using KakeiboApp.Models;
 
 namespace KakeiboApp.Pages
 {
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    [IgnoreAntiforgeryToken]
-    public class ErrorModel : PageModel
+    /// <summary>
+    /// カテゴリ編集画面のPageModel
+    /// </summary>
+    public class EditCategoryModel : PageModel
     {
-        public string? RequestId { get; set; }
+        private readonly KakeiboDbContext _db;
 
-        public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
-
-        public void OnGet()
+        public EditCategoryModel(KakeiboDbContext db)
         {
-            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            _db = db;
+        }
+
+        /// <summary>編集対象のカテゴリ</summary>
+        public Category? Category { get; set; }
+
+        public async Task OnGetAsync(string id)
+        {
+            Category = await _db.Categories.FindAsync(id);
         }
     }
-
 }
