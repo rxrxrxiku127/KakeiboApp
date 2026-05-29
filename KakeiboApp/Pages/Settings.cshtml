@@ -412,13 +412,9 @@
                     <div class="list-item-actions">
                         @* 編集ボタン *@
                         <button class="btn-small btn-edit"
-                                onclick="openEditCategory(this)"
-                                data-id="@c.Id"
-                                data-name="@c.Name"
-                                data-icon="@c.Icon"
-                                data-budget="@c.BudgetLimit">
+                                onclick="openEditCategory('@c.Id', '@c.Name', '@c.Icon', @c.BudgetLimit)">
                             ✏️ 編集
-                        </button>   
+                        </button>
                         @* 削除ボタン（デフォルトカテゴリは非表示） *@
                         @if (!c.IsDefault)
                         {
@@ -600,27 +596,14 @@
             // =====================================================
             // カテゴリ操作
             // =====================================================
-            // =====================================================
-            // openEditCategory(btn)
-            // カテゴリ編集モーダルを開く
-            // data属性から値を取得することで絵文字の問題を回避する
-            // =====================================================
-            function openEditCategory(btn) {
-                // ボタンのdata属性から値を取得
-                const id     = btn.dataset.id;
-                const name   = btn.dataset.name;
-                const icon   = btn.dataset.icon;
-                const budget = btn.dataset.budget;
 
-                // モーダルの各入力欄に値をセット
+            /// カテゴリ編集モーダルを開いて既存データを反映する
+            function openEditCategory(id, name, icon, budget) {
                 document.getElementById('editCatId').value     = id;
                 document.getElementById('editCatName').value   = name;
                 document.getElementById('editCatIcon').value   = icon;
                 document.getElementById('editCatBudget').value = budget;
-
-                // モーダルを開く
                 openModal('modalCategory');
-            }
             }
 
             /// カテゴリを追加する
