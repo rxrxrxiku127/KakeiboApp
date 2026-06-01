@@ -24,6 +24,9 @@
                 padding-bottom: 20px;
             }
 
+            /* =====================================================
+                       共通ヘッダー
+                       ===================================================== */
             .header {
                 background: #2a3c78;
                 color: white;
@@ -75,6 +78,9 @@
                     font-size: 10px;
                 }
 
+            /* =====================================================
+                       コンテンツエリア
+                       ===================================================== */
             .container {
                 padding: 15px;
                 max-width: 600px;
@@ -95,6 +101,9 @@
                     margin-bottom: 15px;
                 }
 
+            /* =====================================================
+                       フォーム
+                       ===================================================== */
             .form-group {
                 margin-bottom: 12px;
             }
@@ -115,6 +124,15 @@
                     font-size: 14px;
                 }
 
+            .divider {
+                margin-top: 15px;
+                padding-top: 15px;
+                border-top: 1px solid #eee;
+            }
+
+            /* =====================================================
+                       ボタン
+                       ===================================================== */
             .btn {
                 padding: 10px 20px;
                 border: none;
@@ -150,6 +168,19 @@
                 color: white;
             }
 
+            .btn-cancel {
+                background: #eee;
+                color: #333;
+            }
+
+            .btn-save {
+                background: #2a3c78;
+                color: white;
+            }
+
+            /* =====================================================
+                       一覧アイテム
+                       ===================================================== */
             .list-item {
                 display: flex;
                 justify-content: space-between;
@@ -181,8 +212,12 @@
             .list-item-actions {
                 display: flex;
                 gap: 6px;
+                align-items: center;
             }
 
+            /* =====================================================
+                       成功バナー
+                       ===================================================== */
             .banner {
                 display: none;
                 position: fixed;
@@ -199,6 +234,9 @@
                 box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             }
 
+            /* =====================================================
+                       モーダル
+                       ===================================================== */
             .modal-overlay {
                 display: none;
                 position: fixed;
@@ -241,51 +279,11 @@
                     font-weight: bold;
                     cursor: pointer;
                 }
-
-            .btn-cancel {
-                background: #eee;
-                color: #333;
-            }
-
-            .btn-save {
-                background: #2a3c78;
-                color: white;
-            }
-
-            .divider {
-                margin-top: 15px;
-                padding-top: 15px;
-                border-top: 1px solid #eee;
-            }
     </style>
 </head>
 <body>
 
     <div id="banner" class="banner"></div>
-
-    @* カテゴリ編集モーダル *@
-    <div class="modal-overlay" id="modalCategory">
-        <div class="modal">
-            <h3>📂 カテゴリを編集</h3>
-            <input type="hidden" id="editCatId" />
-            <div class="form-group">
-                <label>カテゴリ名</label>
-                <input type="text" id="editCatName" />
-            </div>
-            <div class="form-group">
-                <label>アイコン（絵文字）</label>
-                <input type="text" id="editCatIcon" maxlength="2" />
-            </div>
-            <div class="form-group">
-                <label>予算上限（円）</label>
-                <input type="number" id="editCatBudget" />
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeModal('modalCategory')">キャンセル</button>
-                <button class="btn-save" onclick="updateCategory()">更新する</button>
-            </div>
-        </div>
-    </div>
 
     @* カード編集モーダル *@
     <div class="modal-overlay" id="modalCard">
@@ -382,6 +380,13 @@
                         </div>
                     </div>
                     <div class="list-item-actions">
+                        @* 編集ボタン：EditCategoryページに遷移 *@
+                        <a href="/EditCategory?id=@c.Id"
+                           class="btn-small btn-edit"
+                           style="text-decoration:none;display:inline-flex;align-items:center;gap:4px">
+                            ✏️ 編集
+                        </a>
+                        @* 削除ボタン：デフォルトカテゴリは非表示 *@
                         @if (!c.IsDefault)
                         {
                             <button class="btn-small btn-danger"
@@ -430,6 +435,14 @@
                         <div class="meta">締め日：@card.ClosingDay 日　引き落とし：@card.BillingDay 日</div>
                     </div>
                     <div class="list-item-actions">
+                        <button class="btn-small btn-edit"
+                                data-id="@card.Id"
+                                data-name="@card.Name"
+                                data-closing="@card.ClosingDay"
+                                data-billing="@card.BillingDay"
+                                onclick="openEditCard(this)">
+                            ✏️ 編集
+                        </button>
                         <button class="btn-small btn-danger"
                                 data-id="@card.Id"
                                 data-name="@card.Name"
@@ -551,28 +564,13 @@
 
             // =====================================================
             // モーダル操作
-            // styleで直接表示制御する
             // =====================================================
-            function openModal(id) {
-                document.getElementById(id).style.display = 'flex';
-            }
-
-            function closeModal(id) {
-                document.getElementById(id).style.display = 'none';
-            }
+            function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
+            function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
             // =====================================================
             // カテゴリ操作
             // =====================================================
-
-            // data属性から値を取得してモーダルを開く
-            function openEditCategory(btn) {
-                document.getElementById('editCatId').value     = btn.dataset.id;
-                document.getElementById('editCatName').value   = btn.dataset.name;
-                document.getElementById('editCatIcon').value   = btn.dataset.icon;
-                document.getElementById('editCatBudget').value = btn.dataset.budget;
-                openModal('modalCategory');
-            }
 
             // カテゴリを追加する
             async function addCategory() {
@@ -589,27 +587,6 @@
                 const json = await res.json();
                 if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
                 else { alert('エラーが発生しました'); }
-            }
-
-            // カテゴリを更新する
-            async function updateCategory() {
-                const id     = document.getElementById('editCatId').value;
-                const name   = document.getElementById('editCatName').value.trim();
-                const icon   = document.getElementById('editCatIcon').value.trim();
-                const budget = parseInt(document.getElementById('editCatBudget').value) || 0;
-                if (!name) { alert('カテゴリ名を入力してください'); return; }
-
-                const res  = await fetch(`/api/kakeibo/category/${id}`, {
-                    method  : 'PUT',
-                    headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ name, icon: icon || '📦', budgetLimit: budget })
-                });
-                const json = await res.json();
-                if (res.ok) {
-                    closeModal('modalCategory');
-                    showBanner(json.message);
-                    setTimeout(() => location.reload(), 1000);
-                } else { alert('更新に失敗しました'); }
             }
 
             // カテゴリを削除する（確認ダイアログあり）
