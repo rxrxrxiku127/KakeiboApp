@@ -382,11 +382,6 @@
                         </div>
                     </div>
                     <div class="list-item-actions">
-                        @* 編集ボタン：data属性で値を渡す *@
-                        <a href="/EditCategory?id=@c.Id" class="btn-small btn-edit" style="text-decoration:none">
-                            ✏️ 編集
-                        </a>
-                        @* 削除ボタン：デフォルトカテゴリは非表示 *@
                         @if (!c.IsDefault)
                         {
                             <button class="btn-small btn-danger"
@@ -435,14 +430,6 @@
                         <div class="meta">締め日：@card.ClosingDay 日　引き落とし：@card.BillingDay 日</div>
                     </div>
                     <div class="list-item-actions">
-                        <button class="btn-small btn-edit"
-                                data-id="@card.Id"
-                                data-name="@card.Name"
-                                data-closing="@card.ClosingDay"
-                                data-billing="@card.BillingDay"
-                                onclick="openEditCard(this)">
-                            ✏️ 編集
-                        </button>
                         <button class="btn-small btn-danger"
                                 data-id="@card.Id"
                                 data-name="@card.Name"
