@@ -343,6 +343,13 @@
     <div class="header">
         <div class="header-title">💴 家計簿</div>
         <div class="header-nav">
+
+            @* ログアウトボタン *@
+            <button onclick="logout()"
+                    style="background:rgba(255,255,255,0.15);color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px">
+                @Model.DisplayName さん｜ログアウト
+            </button>
+
             @* ホームリンク（現在のページなのでactiveクラス） *@
             <a href="/" class="nav-link active">
                 <span>🏠</span><small>ホーム</small>
@@ -518,6 +525,14 @@
                     alert('削除に失敗しました');
                 }
             }
+
+                        // ログアウト
+            async function logout() {
+                if (!confirm('ログアウトしますか？')) return;
+                await fetch('/api/auth/logout', { method: 'POST' });
+                window.location.href = '/Login';
+            }
+
     </script>
 </body>
 </html>

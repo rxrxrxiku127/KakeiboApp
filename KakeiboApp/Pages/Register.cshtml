@@ -1,0 +1,193 @@
+﻿@page
+@model KakeiboApp.Pages.RegisterModel
+@{
+    ViewData["Title"] = "新規登録";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>新規登録 - 家計簿アプリ</title>
+    <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'メイリオ', sans-serif;
+                background: #f0f2f8;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+            }
+
+            .container {
+                background: white;
+                border-radius: 16px;
+                padding: 40px 30px;
+                width: 90%;
+                max-width: 400px;
+                box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            }
+
+            .logo {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+                .logo h1 {
+                    font-size: 28px;
+                    color: #2a3c78;
+                }
+
+                .logo p {
+                    font-size: 13px;
+                    color: gray;
+                    margin-top: 5px;
+                }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+                .form-group label {
+                    display: block;
+                    font-size: 12px;
+                    font-weight: bold;
+                    color: gray;
+                    margin-bottom: 6px;
+                }
+
+                .form-group input {
+                    width: 100%;
+                    padding: 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    font-size: 14px;
+                }
+
+                    .form-group input:focus {
+                        outline: none;
+                        border-color: #2a3c78;
+                    }
+
+            .btn-register {
+                width: 100%;
+                padding: 14px;
+                background: #3c9660;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                margin-top: 10px;
+            }
+
+                .btn-register:hover {
+                    background: #2d7048;
+                }
+
+            .error {
+                background: #fde8e8;
+                color: #dc4646;
+                padding: 10px 15px;
+                border-radius: 8px;
+                font-size: 13px;
+                margin-bottom: 15px;
+            }
+
+            .login-link {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 13px;
+                color: gray;
+            }
+
+                .login-link a {
+                    color: #2a3c78;
+                    font-weight: bold;
+                    text-decoration: none;
+                }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>💴 家計簿</h1>
+            <p>アカウントを作成しよう</p>
+        </div>
+
+        <div class="form-group">
+            <label>表示名</label>
+            <input type="text" id="displayName" placeholder="例：山田太郎" />
+        </div>
+        <div class="form-group">
+            <label>メールアドレス</label>
+            <input type="email" id="email" placeholder="example@email.com" />
+        </div>
+        <div class="form-group">
+            <label>パスワード（6文字以上）</label>
+            <input type="password" id="password" placeholder="パスワードを入力" />
+        </div>
+        <div class="form-group">
+            <label>パスワード（確認）</label>
+            <input type="password" id="passwordConfirm" placeholder="もう一度入力" />
+        </div>
+
+        <button class="btn-register" onclick="register()">アカウントを作成</button>
+
+        <div class="login-link">
+            すでにアカウントをお持ちの方は
+            <a href="/Login">ログイン</a>
+        </div>
+    </div>
+
+    <script>
+            async function register() {
+                const displayName     = document.getElementById('displayName').value.trim();
+                const email           = document.getElementById('email').value.trim();
+                const password        = document.getElementById('password').value;
+                const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+                if (!displayName || !email || !password) {
+                    alert('全項目を入力してください');
+                    return;
+                }
+                if (password.length < 6) {
+                    alert('パスワードは6文字以上にしてください');
+                    return;
+                }
+                if (password !== passwordConfirm) {
+                    alert('パスワードが一致しません');
+                    return;
+                }
+
+                const res = await fetch('/api/auth/register', {
+                    method  : 'POST',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ displayName, email, password })
+                });
+
+                const json = await res.json();
+                if (res.ok) {
+                    alert('登録完了！ログインしてください');
+                    window.location.href = '/Login';
+                } else {
+                    alert(json.message || '登録に失敗しました');
+                }
+            }
+
+            // Enterキーで登録
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Enter') register();
+            });
+    </script>
+</body>
+</html>

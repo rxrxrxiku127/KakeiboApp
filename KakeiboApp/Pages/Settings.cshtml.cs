@@ -1,59 +1,33 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using KakeiboApp.Models;
 
 namespace KakeiboApp.Pages
 {
-    /// <summary>
-    /// 設定画面のPageModel
-    /// カテゴリ・カード・固定費の一覧をDBから取得して表示する
-    /// </summary>
+    [Authorize]
     public class SettingsModel : PageModel
     {
-        // =====================================================
-        // DBコンテキスト（DIで注入）
-        // =====================================================
         private readonly KakeiboDbContext _db;
 
-        /// <summary>コンストラクタ（DBコンテキストをDI）</summary>
-        public SettingsModel(KakeiboDbContext db)
-        {
-            _db = db;
-        }
+        public SettingsModel(KakeiboDbContext db) { _db = db; }
 
-        // =====================================================
-        // 画面に渡すデータ
-        // =====================================================
+        private string GetUserId()
+            => User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
 
-        /// <summary>カテゴリ一覧</summary>
         public List<Category> Categories { get; set; } = new();
-
-        /// <summary>カード一覧</summary>
         public List<CreditCard> Cards { get; set; } = new();
-
-        /// <summary>固定費一覧</summary>
         public List<FixedExpense> FixedExpenses { get; set; } = new();
 
-        /// <summary>
-        /// GETリクエスト処理
-        /// DBから全データを取得する
-        /// </summary>
         public async Task OnGetAsync()
         {
-            // カテゴリ一覧をDBから取得
-            Categories = await _db.Categories.ToListAsync();
-
-            // カード一覧をDBから取得
-            Cards = await _db.Cards.ToListAsync();
-
-            // 固定費一覧をDBから取得
-            FixedExpenses = await _db.FixedExpenses.ToListAsync();
+            var userId = GetUserId();
+            Categories = await _db.Categories.Where(c => c.UserId == userId).ToListAsync();
+            Cards = await _db.Cards.Where(c => c.UserId == userId).ToListAsync();
+            FixedExpenses = await _db.FixedExpenses.Where(f => f.UserId == userId).ToListAsync();
         }
 
-        /// <summary>
-        /// カテゴリIDからカテゴリ名を取得する
-        /// 固定費一覧でカテゴリ名を表示するために使用
-        /// </summary>
         public string GetCategoryName(string id)
             => Categories.FirstOrDefault(c => c.Id == id)?.Name ?? "";
     }

@@ -1,59 +1,60 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using KakeiboApp.Models;
 
-// =====================================================
-// サービスの登録
-// DIコンテナに各サービスを登録する
-// =====================================================
 var builder = WebApplication.CreateBuilder(args);
 
-// Razor Pages を使用する
 builder.Services.AddRazorPages();
-
-// Web API コントローラーを使用する
 builder.Services.AddControllers();
 
 // =====================================================
 // SQLite データベースの設定
-// kakeibo.db というファイルにデータを保存する
-// ファイルはアプリと同じフォルダに作成される
 // =====================================================
+var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+                       ?? "Data Source=kakeibo.db";
+
 builder.Services.AddDbContext<KakeiboDbContext>(options =>
-    options.UseSqlite("Data Source=kakeibo.db"));
+    options.UseSqlite(connectionString));
+
+// =====================================================
+// Cookie認証の設定
+// ログイン・ログアウトをCookieで管理する
+// =====================================================
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        // 未ログイン時のリダイレクト先
+        options.LoginPath = "/Login";
+        // ログアウト後のリダイレクト先
+        options.LogoutPath = "/Logout";
+        // Cookieの有効期限（30日）
+        options.ExpireTimeSpan = TimeSpan.FromDays(30);
+        // スライディングセッション（アクセスのたびに期限を延長）
+        options.SlidingExpiration = true;
+    });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
 // =====================================================
 // データベースの自動マイグレーション
-// アプリ起動時にDBが存在しない場合は自動で作成する
-// 初期データ（デフォルトカテゴリ）も自動で挿入される
 // =====================================================
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<KakeiboDbContext>();
-
-    // DBが存在しない場合は作成・マイグレーションを実行
     db.Database.EnsureCreated();
 }
 
-// =====================================================
-// ミドルウェアの設定
-// リクエストの処理順序を定義する
-// =====================================================
-
-// HTTPS にリダイレクト
 app.UseHttpsRedirection();
-
-// wwwroot フォルダの静的ファイルを配信
 app.UseStaticFiles();
-
-// ルーティングを有効化
 app.UseRouting();
 
-// Razor Pages のルートを登録
-app.MapRazorPages();
+// 認証・認可ミドルウェア（必ずUseRoutingの後に）
+app.UseAuthentication();
+app.UseAuthorization();
 
-// API コントローラーのルートを登録
+app.MapRazorPages();
 app.MapControllers();
 
 app.Run();

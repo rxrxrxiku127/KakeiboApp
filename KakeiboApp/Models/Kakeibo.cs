@@ -24,6 +24,29 @@ namespace KakeiboApp.Models
     }
 
     /// <summary>
+    /// ユーザーアカウント
+    /// メールアドレスとハッシュ化されたパスワードで認証する
+    /// </summary>
+    public class AppUser
+    {
+        /// <summary>主キー（GUID）</summary>
+        [Key]
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+
+        /// <summary>メールアドレス（ログインID・一意）</summary>
+        public string Email { get; set; } = "";
+
+        /// <summary>パスワード（BCryptでハッシュ化して保存）</summary>
+        public string PasswordHash { get; set; } = "";
+
+        /// <summary>表示名</summary>
+        public string DisplayName { get; set; } = "";
+
+        /// <summary>登録日時</summary>
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+    }
+
+    /// <summary>
     /// 取引記録（収入・支出1件分のデータ）
     /// </summary>
     public class Transaction
@@ -31,6 +54,9 @@ namespace KakeiboApp.Models
         /// <summary>主キー（GUID）</summary>
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
+
+        /// <summary>所有ユーザーID</summary>
+        public string UserId { get; set; } = "";
 
         /// <summary>使った日付</summary>
         public DateTime Date { get; set; } = DateTime.Today;
@@ -41,7 +67,7 @@ namespace KakeiboApp.Models
         /// <summary>金額（円）</summary>
         public int Amount { get; set; }
 
-        /// <summary>カテゴリID（Categoryテーブルの外部キー）</summary>
+        /// <summary>カテゴリID</summary>
         public string CategoryId { get; set; } = "";
 
         /// <summary>メモ（任意）</summary>
@@ -69,6 +95,9 @@ namespace KakeiboApp.Models
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
+        /// <summary>所有ユーザーID</summary>
+        public string UserId { get; set; } = "";
+
         /// <summary>カテゴリ名</summary>
         public string Name { get; set; } = "";
 
@@ -91,6 +120,9 @@ namespace KakeiboApp.Models
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
+        /// <summary>所有ユーザーID</summary>
+        public string UserId { get; set; } = "";
+
         /// <summary>カード名（例：楽天カード）</summary>
         public string Name { get; set; } = "";
 
@@ -110,6 +142,9 @@ namespace KakeiboApp.Models
         /// <summary>主キー</summary>
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
+
+        /// <summary>所有ユーザーID</summary>
+        public string UserId { get; set; } = "";
 
         /// <summary>固定費名（例：家賃・Netflix）</summary>
         public string Name { get; set; } = "";
