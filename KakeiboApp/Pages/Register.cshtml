@@ -129,8 +129,8 @@
             <input type="text" id="displayName" placeholder="例：山田太郎" />
         </div>
         <div class="form-group">
-            <label>ユーザーID</label>
-            <input type="userod" id="userid" placeholder="ユーザーID" />
+            <label>メールアドレス</label>
+            <input type="email" id="email" placeholder="example@email.com" />
         </div>
         <div class="form-group">
             <label>パスワード（6文字以上）</label>
@@ -152,11 +152,11 @@
     <script>
             async function register() {
                 const displayName     = document.getElementById('displayName').value.trim();
-                const userod           = document.getElementById('userod').value.trim();
+                const email           = document.getElementById('email').value.trim();
                 const password        = document.getElementById('password').value;
                 const passwordConfirm = document.getElementById('passwordConfirm').value;
 
-                if (!displayName || !userod || !password) {
+                if (!displayName || !email || !password) {
                     alert('全項目を入力してください');
                     return;
                 }
@@ -172,7 +172,7 @@
                 const res = await fetch('/api/auth/register', {
                     method  : 'POST',
                     headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ displayName, userod, password })
+                    body    : JSON.stringify({ displayName, email, password })
                 });
 
                 const json = await res.json();

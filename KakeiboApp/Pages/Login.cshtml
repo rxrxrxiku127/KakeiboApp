@@ -137,8 +137,8 @@
         }
 
         <div class="form-group">
-            <label>ユーザーID</label>
-            <input type="text" id="userod" placeholder="ユーザーIDを入力" />
+            <label>メールアドレス</label>
+            <input type="email" id="email" placeholder="example@email.com" />
         </div>
         <div class="form-group">
             <label>パスワード</label>
@@ -157,18 +157,18 @@
 
     <script>
             async function login() {
-                const userod    = document.getElementById('userod').value.trim();
+                const email    = document.getElementById('email').value.trim();
                 const password = document.getElementById('password').value;
 
-                if (!userod || !password) {
-                    alert('ユーザーネームとパスワードを入力してください');
+                if (!email || !password) {
+                    alert('メールアドレスとパスワードを入力してください');
                     return;
                 }
 
                 const res = await fetch('/api/auth/login', {
                     method  : 'POST',
                     headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ userod, password })
+                    body    : JSON.stringify({ email, password })
                 });
 
                 if (res.ok) {
