@@ -25,7 +25,7 @@ namespace KakeiboApp.Models
 
     /// <summary>
     /// ユーザーアカウント
-    /// メールアドレスとハッシュ化されたパスワードで認証する
+    /// ユーザーIDとパスワードで認証する
     /// </summary>
     public class AppUser
     {
@@ -33,14 +33,11 @@ namespace KakeiboApp.Models
         [Key]
         public string Id { get; set; } = Guid.NewGuid().ToString();
 
-        /// <summary>メールアドレス（ログインID・一意）</summary>
-        public string Email { get; set; } = "";
+        /// <summary>ユーザーID（ログインID・一意）</summary>
+        public string UserId { get; set; } = "";
 
-        /// <summary>パスワード（BCryptでハッシュ化して保存）</summary>
+        /// <summary>パスワード（SHA256でハッシュ化して保存）</summary>
         public string PasswordHash { get; set; } = "";
-
-        /// <summary>表示名</summary>
-        public string DisplayName { get; set; } = "";
 
         /// <summary>登録日時</summary>
         public DateTime CreatedAt { get; set; } = DateTime.Now;

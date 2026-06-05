@@ -8,13 +8,13 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    @* スマホ対応のviewport設定 *@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>家計簿アプリ</title>
+    @* PWA・Safari用アイコン設定 *@
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="家計簿" />
     <style>
-            /* =====================================================
-                       リセット・基本スタイル
-                       ===================================================== */
             * {
                 box-sizing: border-box;
                 margin: 0;
@@ -30,13 +30,11 @@
 
             /* =====================================================
                        共通ヘッダー
-                       全画面共通のナビゲーションバー
-                       ホーム・レポート・設定・追加ボタンを含む
                        ===================================================== */
             .header {
                 background: #2a3c78;
                 color: white;
-                padding: 12px 20px;
+                padding: 12px 15px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -48,25 +46,27 @@
             .header-title {
                 font-size: 18px;
                 font-weight: bold;
+                flex-shrink: 0;
             }
 
-            /* ナビゲーションリンク */
             .header-nav {
                 display: flex;
                 align-items: center;
-                gap: 8px;
+                gap: 6px;
+                flex-wrap: nowrap;
             }
 
             .nav-link {
                 color: white;
                 text-decoration: none;
-                padding: 6px 12px;
+                padding: 5px 8px;
                 border-radius: 6px;
-                font-size: 13px;
+                font-size: 12px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 gap: 2px;
+                flex-shrink: 0;
             }
 
                 .nav-link:hover {
@@ -78,27 +78,56 @@
                 }
 
                 .nav-link span {
-                    font-size: 18px;
+                    font-size: 16px;
                 }
 
                 .nav-link small {
-                    font-size: 10px;
+                    font-size: 9px;
                 }
 
-            /* 追加ボタン（ヘッダー内） */
-            .btn-add {
-                background: #f0c040;
-                color: #2a3c78;
+            /* ログアウトボタン */
+            .btn-logout {
+                background: rgba(255,255,255,0.15);
+                color: white;
+                border: none;
+                padding: 5px 8px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 10px;
+                white-space: nowrap;
+                flex-shrink: 0;
+            }
+
+            /* =====================================================
+                       追加ボタンエリア（ヘッダー直下）
+                       ===================================================== */
+            .add-btn-area {
+                background: white;
+                padding: 10px 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #eee;
+            }
+
+                .add-btn-area .user-info {
+                    font-size: 12px;
+                    color: gray;
+                }
+
+            .btn-add-main {
+                background: #2a3c78;
+                color: white;
                 border: none;
                 border-radius: 8px;
-                padding: 8px 14px;
-                font-size: 13px;
+                padding: 10px 18px;
+                font-size: 14px;
                 font-weight: bold;
                 cursor: pointer;
                 text-decoration: none;
-                display: flex;
+                display: inline-flex;
                 align-items: center;
-                gap: 4px;
+                gap: 6px;
             }
 
             /* =====================================================
@@ -138,8 +167,7 @@
             }
 
             /* =====================================================
-                       通知バナー
-                       予算超過・予算80%超えの警告
+                       通知バナー（予算警告）
                        ===================================================== */
             .notification {
                 background: #fff3cd;
@@ -150,7 +178,7 @@
                 font-size: 13px;
             }
 
-            /* 成功バナー（登録・更新・削除完了時） */
+            /* 成功バナー */
             .banner {
                 display: none;
                 position: fixed;
@@ -251,15 +279,14 @@
             .bar-ok {
                 background: #3c9660;
             }
-            /* 80%未満：緑 */
+
             .bar-warn {
                 background: #ffc107;
             }
-            /* 80%以上：黄 */
+
             .bar-over {
                 background: #dc4646;
             }
-            /* 100%以上：赤 */
 
             /* =====================================================
                        取引一覧
@@ -306,7 +333,7 @@
                 font-weight: bold;
             }
 
-            /* 操作ボタン（編集・削除） */
+            /* 操作ボタン */
             .btn-edit {
                 background: #4682dc;
                 color: white;
@@ -330,49 +357,27 @@
 </head>
 <body>
 
-    @* 成功バナー（JS で表示/非表示を制御） *@
     <div id="banner" class="banner"></div>
 
-    @*
-    =====================================================
-    共通ヘッダー
-    全画面共通のナビゲーション
-    ホーム・レポート・設定へのリンクと追加ボタンを含む
-    =====================================================
-    *@
+    @* 共通ヘッダー *@
     <div class="header">
         <div class="header-title">💴 家計簿</div>
         <div class="header-nav">
-
+            <a href="/" class="nav-link active"><span>🏠</span><small>ホーム</small></a>
+            <a href="/Report" class="nav-link"><span>📊</span><small>レポート</small></a>
+            <a href="/Settings" class="nav-link"><span>⚙️</span><small>設定</small></a>
             @* ログアウトボタン *@
-            <button onclick="logout()"
-                    style="background:rgba(255,255,255,0.15);color:white;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px">
-                @Model.DisplayName さん｜ログアウト
-            </button>
-
-            @* ホームリンク（現在のページなのでactiveクラス） *@
-            <a href="/" class="nav-link active">
-                <span>🏠</span><small>ホーム</small>
-            </a>
-            @* レポートリンク *@
-            <a href="/Report" class="nav-link">
-                <span>📊</span><small>レポート</small>
-            </a>
-            @* 設定リンク *@
-            <a href="/Settings" class="nav-link">
-                <span>⚙️</span><small>設定</small>
-            </a>
-            @* 収支追加ボタン *@
-            <a href="/Add" class="btn-add">＋ 追加</a>
+            <button class="btn-logout" onclick="logout()">ログアウト</button>
         </div>
     </div>
 
-    @*
-    =====================================================
-    月ナビゲーション
-    ◀▶ボタンで前月・翌月に切り替える
-    =====================================================
-    *@
+    @* 追加ボタンエリア *@
+    <div class="add-btn-area">
+        <div class="user-info">👤 @Model.DisplayName さん</div>
+        <a href="/Add" class="btn-add-main">＋ 収支を追加</a>
+    </div>
+
+    @* 月ナビゲーション *@
     <div class="month-nav">
         <button onclick="changeMonth(-1)">◀</button>
         <span>@Model.Year 年 @Model.Month 月</span>
@@ -387,12 +392,7 @@
             <div class="notification">⚠️ @n</div>
         }
 
-        @*
-        =====================================================
-        収支サマリー
-        今月の収入・支出・残高を3列で表示
-        =====================================================
-        *@
+        @* 収支サマリー *@
         <div class="summary">
             <div class="summary-card">
                 <div class="label">収入</div>
@@ -408,12 +408,7 @@
             </div>
         </div>
 
-        @*
-        =====================================================
-        予算進捗
-        カテゴリごとの予算使用率をプログレスバーで表示
-        =====================================================
-        *@
+        @* 予算進捗 *@
         <div class="budget-section">
             <h3>📊 予算進捗</h3>
             @foreach (var b in Model.BudgetProgress)
@@ -434,13 +429,7 @@
             }
         </div>
 
-        @*
-        =====================================================
-        取引一覧
-        今月の取引を日付降順で表示
-        編集・削除ボタンつき
-        =====================================================
-        *@
+        @* 取引一覧 *@
         <div class="transaction-section">
             <h3>📋 今月の取引</h3>
             @if (!Model.Transactions.Any())
@@ -452,19 +441,14 @@
                 var cat = Model.GetCategory(t.CategoryId);
                 <div class="transaction-item">
                     <div class="t-left">
-                        @* メモがあればメモを、なければカテゴリ名を表示 *@
                         <div class="t-name">@cat?.Icon @(string.IsNullOrEmpty(t.Note) ? cat?.Name : t.Note)</div>
-                        @* 日付・支払い方法を表示 *@
                         <div class="t-meta">@t.Date.ToString("M/d") ・ @Model.GetPaymentLabel(t.PaymentMethod)</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:8px">
-                        @* 収入は+緑・支出は-赤で金額表示 *@
                         <div class="t-amount @(t.Type == KakeiboApp.Models.TransactionType.Income ? "income" : "expense")">
                             @(t.Type == KakeiboApp.Models.TransactionType.Income ? "+" : "-")¥@t.Amount.ToString("#,0")
                         </div>
-                        @* 編集ボタン：/Editページに遷移 *@
                         <a href="/Edit?id=@t.Id" class="btn-edit">✏️</a>
-                        @* 削除ボタン：確認ダイアログ後にDELETEリクエスト *@
                         <button class="btn-delete" onclick="deleteTransaction('@t.Id')">🗑</button>
                     </div>
                 </div>
@@ -474,24 +458,20 @@
 
     <script>
             // =====================================================
-            // showBanner(message, color)
-            // 画面上部にバナーを表示する
-            // message: 表示するメッセージ
-            // color: バナーの背景色（デフォルト：緑）
-            // 2秒後に自動で非表示になる
+            // showBanner(message)
+            // 成功バナーを表示する（2秒後に自動非表示）
             // =====================================================
             function showBanner(message, color = '#3c9660') {
                 const banner = document.getElementById('banner');
-                banner.textContent = message;
+                banner.textContent      = message;
                 banner.style.background = color;
-                banner.style.display = 'block';
+                banner.style.display    = 'block';
                 setTimeout(() => banner.style.display = 'none', 2000);
             }
 
             // =====================================================
             // changeMonth(delta)
             // 月ナビゲーションで前月・翌月に切り替える
-            // delta: -1（前月）or 1（翌月）
             // =====================================================
             function changeMonth(delta) {
                 const url   = new URL(window.location.href);
@@ -507,15 +487,12 @@
 
             // =====================================================
             // deleteTransaction(id)
-            // 取引を削除する
-            // 確認ダイアログ → DELETE /api/kakeibo/transaction/{id}
-            // 成功後はバナーを表示してページをリロード
+            // 取引を削除する（確認ダイアログあり）
             // =====================================================
             async function deleteTransaction(id) {
-                // 誤操作防止の確認ダイアログ
                 if (!confirm('この取引を削除してもよいですか？\nこの操作は元に戻せません。')) return;
 
-                const res = await fetch(`/api/kakeibo/transaction/${id}`, { method: 'DELETE' });
+                const res  = await fetch(`/api/kakeibo/transaction/${id}`, { method: 'DELETE' });
                 const data = await res.json();
 
                 if (res.ok) {
@@ -526,13 +503,15 @@
                 }
             }
 
-                        // ログアウト
+            // =====================================================
+            // logout()
+            // ログアウトする
+            // =====================================================
             async function logout() {
                 if (!confirm('ログアウトしますか？')) return;
                 await fetch('/api/auth/logout', { method: 'POST' });
                 window.location.href = '/Login';
             }
-
     </script>
 </body>
 </html>

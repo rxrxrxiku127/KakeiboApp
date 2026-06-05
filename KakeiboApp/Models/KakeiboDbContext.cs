@@ -36,9 +36,9 @@ namespace KakeiboApp.Models
         /// </summary>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // メールアドレスはユニーク制約
+            // ユーザーIDはユニーク制約
             modelBuilder.Entity<AppUser>()
-                .HasIndex(u => u.Email)
+                .HasIndex(u => u.UserId)
                 .IsUnique();
         }
     }
