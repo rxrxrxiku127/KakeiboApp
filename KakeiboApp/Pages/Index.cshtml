@@ -456,8 +456,7 @@
             }
         </div>
     </div>
-
-    <script>
+<script>
             // =====================================================
             // showBanner(message)
             // 成功バナーを表示する（2秒後に自動非表示）
@@ -513,6 +512,17 @@
                 await fetch('/api/auth/logout', { method: 'POST' });
                 window.location.href = '/Login';
             }
+
+            // =====================================================
+            // ページ読み込み時に固定費を自動計上する
+            // =====================================================
+            (async function applyFixed() {
+                await fetch('/api/kakeibo/apply-fixed', {
+                    method  : 'POST',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ year: @Model.Year, month: @Model.Month })
+                });
+            })();
     </script>
 </body>
 </html>
