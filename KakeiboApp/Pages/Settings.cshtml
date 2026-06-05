@@ -11,274 +11,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>設定</title>
     <style>
-            * {
-                box-sizing: border-box;
-                margin: 0;
-                padding: 0;
-            }
-
-            body {
-                font-family: 'メイリオ', sans-serif;
-                background: #f0f2f8;
-                color: #333;
-                padding-bottom: 20px;
-            }
-
-            /* =====================================================
-                       共通ヘッダー
-                       ===================================================== */
-            .header {
-                background: #2a3c78;
-                color: white;
-                padding: 12px 20px;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                position: sticky;
-                top: 0;
-                z-index: 100;
-            }
-
-            .header-title {
-                font-size: 18px;
-                font-weight: bold;
-            }
-
-            .header-nav {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-
-            .nav-link {
-                color: white;
-                text-decoration: none;
-                padding: 6px 12px;
-                border-radius: 6px;
-                font-size: 13px;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 2px;
-            }
-
-                .nav-link:hover {
-                    background: rgba(255,255,255,0.15);
-                }
-
-                .nav-link.active {
-                    background: rgba(255,255,255,0.25);
-                }
-
-                .nav-link span {
-                    font-size: 18px;
-                }
-
-                .nav-link small {
-                    font-size: 10px;
-                }
-
-            /* =====================================================
-                       コンテンツエリア
-                       ===================================================== */
-            .container {
-                padding: 15px;
-                max-width: 600px;
-                margin: 0 auto;
-            }
-
-            .card {
-                background: white;
-                border-radius: 10px;
-                padding: 15px;
-                margin-bottom: 15px;
-                box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-            }
-
-                .card h3 {
-                    font-size: 14px;
-                    color: #2a3c78;
-                    margin-bottom: 15px;
-                }
-
-            /* =====================================================
-                       フォーム
-                       ===================================================== */
-            .form-group {
-                margin-bottom: 12px;
-            }
-
-                .form-group label {
-                    display: block;
-                    font-size: 12px;
-                    font-weight: bold;
-                    color: gray;
-                    margin-bottom: 5px;
-                }
-
-                .form-group input, .form-group select {
-                    width: 100%;
-                    padding: 10px;
-                    border: 1px solid #ddd;
-                    border-radius: 8px;
-                    font-size: 14px;
-                }
-
-            .divider {
-                margin-top: 15px;
-                padding-top: 15px;
-                border-top: 1px solid #eee;
-            }
-
-            /* =====================================================
-                       ボタン
-                       ===================================================== */
-            .btn {
-                padding: 10px 20px;
-                border: none;
-                border-radius: 8px;
-                font-size: 13px;
-                font-weight: bold;
-                cursor: pointer;
-            }
-
-            .btn-primary {
-                background: #2a3c78;
-                color: white;
-                width: 100%;
-                padding: 12px;
-            }
-
-            .btn-danger {
-                background: #dc4646;
-                color: white;
-            }
-
-            .btn-edit {
-                background: #4682dc;
-                color: white;
-            }
-
-            .btn-small {
-                padding: 5px 10px;
-                font-size: 12px;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                color: white;
-            }
-
-            .btn-cancel {
-                background: #eee;
-                color: #333;
-            }
-
-            .btn-save {
-                background: #2a3c78;
-                color: white;
-            }
-
-            /* =====================================================
-                       一覧アイテム
-                       ===================================================== */
-            .list-item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 10px 0;
-                border-bottom: 1px solid #f0f0f0;
-                font-size: 13px;
-            }
-
-                .list-item:last-child {
-                    border-bottom: none;
-                }
-
-            .list-item-info {
-                flex: 1;
-            }
-
-                .list-item-info .name {
-                    font-weight: bold;
-                    font-size: 14px;
-                }
-
-                .list-item-info .meta {
-                    font-size: 11px;
-                    color: gray;
-                    margin-top: 2px;
-                }
-
-            .list-item-actions {
-                display: flex;
-                gap: 6px;
-                align-items: center;
-            }
-
-            /* =====================================================
-                       成功バナー
-                       ===================================================== */
-            .banner {
-                display: none;
-                position: fixed;
-                top: 70px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #3c9660;
-                color: white;
-                padding: 12px 24px;
-                border-radius: 8px;
-                font-size: 14px;
-                font-weight: bold;
-                z-index: 999;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            }
-
-            /* =====================================================
-                       モーダル
-                       ===================================================== */
-            .modal-overlay {
-                display: none;
-                position: fixed;
-                top: 0;
-                left: 0;
-                right: 0;
-                bottom: 0;
-                background: rgba(0,0,0,0.5);
-                z-index: 200;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .modal {
-                background: white;
-                border-radius: 12px;
-                padding: 20px;
-                width: 90%;
-                max-width: 400px;
-            }
-
-                .modal h3 {
-                    font-size: 16px;
-                    color: #2a3c78;
-                    margin-bottom: 15px;
-                }
-
-            .modal-buttons {
-                display: flex;
-                gap: 10px;
-                margin-top: 15px;
-            }
-
-                .modal-buttons button {
-                    flex: 1;
-                    padding: 12px;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    font-weight: bold;
-                    cursor: pointer;
-                }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'メイリオ', sans-serif; background: #f0f2f8; color: #333; padding-bottom: 20px; }
+        .header { background: #2a3c78; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        .header-title { font-size: 18px; font-weight: bold; }
+        .header-nav { display: flex; align-items: center; gap: 8px; }
+        .nav-link { color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .nav-link:hover { background: rgba(255,255,255,0.15); }
+        .nav-link.active { background: rgba(255,255,255,0.25); }
+        .nav-link span { font-size: 18px; }
+        .nav-link small { font-size: 10px; }
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+        .card h3 { font-size: 14px; color: #2a3c78; margin-bottom: 15px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 12px; font-weight: bold; color: gray; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; }
+        .divider { margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee; }
+        .btn { padding: 10px 20px; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .btn-primary { background: #2a3c78; color: white; width: 100%; padding: 12px; }
+        .btn-danger { background: #dc4646; color: white; }
+        .btn-edit { background: #4682dc; color: white; }
+        .btn-small { padding: 5px 10px; font-size: 12px; border: none; border-radius: 6px; cursor: pointer; color: white; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+        .list-item:last-child { border-bottom: none; }
+        .list-item-info { flex: 1; }
+        .list-item-info .name { font-weight: bold; font-size: 14px; }
+        .list-item-info .meta { font-size: 11px; color: gray; margin-top: 2px; }
+        .list-item-actions { display: flex; gap: 6px; align-items: center; }
+        .banner { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #3c9660; color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: bold; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 200; justify-content: center; align-items: center; }
+        .modal { background: white; border-radius: 12px; padding: 20px; width: 90%; max-width: 400px; }
+        .modal h3 { font-size: 16px; color: #2a3c78; margin-bottom: 15px; }
+        .modal-buttons { display: flex; gap: 10px; margin-top: 15px; }
+        .modal-buttons button { flex: 1; padding: 12px; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .btn-cancel { background: #eee; color: #333; }
+        .btn-save { background: #2a3c78; color: white; }
     </style>
 </head>
 <body>
@@ -309,49 +77,6 @@
         </div>
     </div>
 
-    @* 固定費編集モーダル *@
-    <div class="modal-overlay" id="modalFixed">
-        <div class="modal">
-            <h3>🔁 固定費を編集</h3>
-            <input type="hidden" id="editFixedId" />
-            <div class="form-group">
-                <label>固定費名</label>
-                <input type="text" id="editFixedName" />
-            </div>
-            <div class="form-group">
-                <label>金額（円）</label>
-                <input type="number" id="editFixedAmount" />
-            </div>
-            <div class="form-group">
-                <label>毎月何日に計上</label>
-                <input type="number" id="editFixedDay" min="1" max="31" />
-            </div>
-            <div class="form-group">
-                <label>カテゴリ</label>
-                <select id="editFixedCategory">
-                    @foreach (var c in Model.Categories)
-                    {
-                        <option value="@c.Id">@c.Icon @c.Name</option>
-                    }
-                </select>
-            </div>
-            <div class="form-group">
-                <label>支払い方法</label>
-                <select id="editFixedPayment">
-                    <option value="Cash">💵 現金</option>
-                    <option value="Card">💳 カード</option>
-                    <option value="ElectronicMoney">📲 電子マネー</option>
-                    <option value="QRPayment">📱 QR決済</option>
-                    <option value="BankAccount">🏦 口座</option>
-                </select>
-            </div>
-            <div class="modal-buttons">
-                <button class="btn-cancel" onclick="closeModal('modalFixed')">キャンセル</button>
-                <button class="btn-save" onclick="updateFixed()">更新する</button>
-            </div>
-        </div>
-    </div>
-
     @* 共通ヘッダー *@
     <div class="header">
         <div class="header-title">⚙️ 設定</div>
@@ -367,8 +92,6 @@
         @* カテゴリ管理 *@
         <div class="card">
             <h3>📂 カテゴリ管理</h3>
-
-            @* 登録済みカテゴリ一覧 *@
             @foreach (var c in Model.Categories)
             {
                 <div class="list-item">
@@ -380,13 +103,11 @@
                         </div>
                     </div>
                     <div class="list-item-actions">
-                        @* 編集ボタン：EditCategoryページに遷移 *@
                         <a href="/EditCategory?id=@c.Id"
                            class="btn-small btn-edit"
                            style="text-decoration:none;display:inline-flex;align-items:center;gap:4px">
                             ✏️ 編集
                         </a>
-                        @* 削除ボタン：デフォルトカテゴリは非表示 *@
                         @if (!c.IsDefault)
                         {
                             <button class="btn-small btn-danger"
@@ -399,8 +120,6 @@
                     </div>
                 </div>
             }
-
-            @* カテゴリ追加フォーム *@
             <div class="divider">
                 <div class="form-group">
                     <label>カテゴリ名</label>
@@ -421,8 +140,6 @@
         @* カード管理 *@
         <div class="card">
             <h3>💳 カード管理</h3>
-
-            @* 登録済みカード一覧 *@
             @if (!Model.Cards.Any())
             {
                 <p style="color:gray;font-size:13px;margin-bottom:15px">まだカードが登録されていません</p>
@@ -452,8 +169,6 @@
                     </div>
                 </div>
             }
-
-            @* カード追加フォーム *@
             <div class="divider">
                 <div class="form-group">
                     <label>カード名</label>
@@ -474,8 +189,6 @@
         @* 固定費管理 *@
         <div class="card">
             <h3>🔁 固定費管理</h3>
-
-            @* 登録済み固定費一覧 *@
             @if (!Model.FixedExpenses.Any())
             {
                 <p style="color:gray;font-size:13px;margin-bottom:15px">まだ固定費が登録されていません</p>
@@ -491,16 +204,11 @@
                         </div>
                     </div>
                     <div class="list-item-actions">
-                        <button class="btn-small btn-edit"
-                                data-id="@f.Id"
-                                data-name="@f.Name"
-                                data-amount="@f.Amount"
-                                data-day="@f.DayOfMonth"
-                                data-category="@f.CategoryId"
-                                data-payment="@f.PaymentMethod"
-                                onclick="openEditFixed(this)">
+                        <a href="/EditFixed?id=@f.Id"
+                           class="btn-small btn-edit"
+                           style="text-decoration:none;display:inline-flex;align-items:center;gap:4px">
                             ✏️ 編集
-                        </button>
+                        </a>
                         <button class="btn-small btn-danger"
                                 data-id="@f.Id"
                                 data-name="@f.Name"
@@ -510,8 +218,6 @@
                     </div>
                 </div>
             }
-
-            @* 固定費追加フォーム *@
             <div class="divider">
                 <div class="form-group">
                     <label>固定費名</label>
@@ -550,188 +256,113 @@
     </div>
 
     <script>
-            // =====================================================
-            // showBanner(message, color)
-            // 成功バナーを表示する（2秒後に自動非表示）
-            // =====================================================
-            function showBanner(message, color = '#3c9660') {
-                const banner = document.getElementById('banner');
-                banner.textContent      = message;
-                banner.style.background = color;
-                banner.style.display    = 'block';
-                setTimeout(() => banner.style.display = 'none', 2000);
-            }
+        function showBanner(message, color = '#3c9660') {
+            const banner = document.getElementById('banner');
+            banner.textContent      = message;
+            banner.style.background = color;
+            banner.style.display    = 'block';
+            setTimeout(() => banner.style.display = 'none', 2000);
+        }
 
-            // =====================================================
-            // モーダル操作
-            // =====================================================
-            function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
-            function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
-            // =====================================================
-            // カテゴリ操作
-            // =====================================================
+        // カテゴリ操作
+        async function addCategory() {
+            const name   = document.getElementById('catName').value.trim();
+            const icon   = document.getElementById('catIcon').value.trim();
+            const budget = parseInt(document.getElementById('catBudget').value) || 0;
+            if (!name) { alert('カテゴリ名を入力してください'); return; }
+            const res  = await fetch('/api/kakeibo/category', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, icon: icon || '📦', budgetLimit: budget })
+            });
+            const json = await res.json();
+            if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+            else { alert('エラーが発生しました'); }
+        }
 
-            // カテゴリを追加する
-            async function addCategory() {
-                const name   = document.getElementById('catName').value.trim();
-                const icon   = document.getElementById('catIcon').value.trim();
-                const budget = parseInt(document.getElementById('catBudget').value) || 0;
-                if (!name) { alert('カテゴリ名を入力してください'); return; }
+        async function deleteCategory(btn) {
+            const id = btn.dataset.id, name = btn.dataset.name;
+            if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+            const res  = await fetch(`/api/kakeibo/category/${id}`, { method: 'DELETE' });
+            const json = await res.json();
+            if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+            else { alert(json.message || '削除に失敗しました'); }
+        }
 
-                const res  = await fetch('/api/kakeibo/category', {
-                    method  : 'POST',
-                    headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ name, icon: icon || '📦', budgetLimit: budget })
-                });
-                const json = await res.json();
-                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('エラーが発生しました'); }
-            }
+        // カード操作
+        function openEditCard(btn) {
+            document.getElementById('editCardId').value      = btn.dataset.id;
+            document.getElementById('editCardName').value    = btn.dataset.name;
+            document.getElementById('editCardClosing').value = btn.dataset.closing;
+            document.getElementById('editCardBilling').value = btn.dataset.billing;
+            openModal('modalCard');
+        }
 
-            // カテゴリを削除する（確認ダイアログあり）
-            async function deleteCategory(btn) {
-                const id   = btn.dataset.id;
-                const name = btn.dataset.name;
-                if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+        async function addCard() {
+            const name    = document.getElementById('cardName').value.trim();
+            const closing = parseInt(document.getElementById('cardClosing').value);
+            const billing = parseInt(document.getElementById('cardBilling').value);
+            if (!name || !closing || !billing) { alert('全項目を入力してください'); return; }
+            const res  = await fetch('/api/kakeibo/card', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, closingDay: closing, billingDay: billing })
+            });
+            const json = await res.json();
+            if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+            else { alert('エラーが発生しました'); }
+        }
 
-                const res  = await fetch(`/api/kakeibo/category/${id}`, { method: 'DELETE' });
-                const json = await res.json();
-                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert(json.message || '削除に失敗しました'); }
-            }
+        async function updateCard() {
+            const id      = document.getElementById('editCardId').value;
+            const name    = document.getElementById('editCardName').value.trim();
+            const closing = parseInt(document.getElementById('editCardClosing').value);
+            const billing = parseInt(document.getElementById('editCardBilling').value);
+            if (!name || !closing || !billing) { alert('全項目を入力してください'); return; }
+            const res  = await fetch(`/api/kakeibo/card/${id}`, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, closingDay: closing, billingDay: billing })
+            });
+            const json = await res.json();
+            if (res.ok) { closeModal('modalCard'); showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+            else { alert('更新に失敗しました'); }
+        }
 
-            // =====================================================
-            // カード操作
-            // =====================================================
+        async function deleteCard(btn) {
+            const id = btn.dataset.id, name = btn.dataset.name;
+            if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+            const res  = await fetch(`/api/kakeibo/card/${id}`, { method: 'DELETE' });
+            const json = await res.json();
+            if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+            else { alert('削除に失敗しました'); }
+        }
 
-            // data属性から値を取得してモーダルを開く
-            function openEditCard(btn) {
-                document.getElementById('editCardId').value      = btn.dataset.id;
-                document.getElementById('editCardName').value    = btn.dataset.name;
-                document.getElementById('editCardClosing').value = btn.dataset.closing;
-                document.getElementById('editCardBilling').value = btn.dataset.billing;
-                openModal('modalCard');
-            }
+        // 固定費操作
+        async function addFixed() {
+            const name       = document.getElementById('fixedName').value.trim();
+            const amount     = parseInt(document.getElementById('fixedAmount').value);
+            const day        = parseInt(document.getElementById('fixedDay').value);
+            const categoryId = document.getElementById('fixedCategory').value;
+            const payment    = document.getElementById('fixedPayment').value;
+            if (!name || !amount || !day) { alert('全項目を入力してください'); return; }
+            const res  = await fetch('/api/kakeibo/fixed', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, amount, dayOfMonth: day, categoryId, paymentMethod: payment })
+            });
+            const json = await res.json();
+            if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+            else { alert('エラーが発生しました'); }
+        }
 
-            // カードを追加する
-            async function addCard() {
-                const name    = document.getElementById('cardName').value.trim();
-                const closing = parseInt(document.getElementById('cardClosing').value);
-                const billing = parseInt(document.getElementById('cardBilling').value);
-                if (!name || !closing || !billing) { alert('全項目を入力してください'); return; }
-
-                const res  = await fetch('/api/kakeibo/card', {
-                    method  : 'POST',
-                    headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ name, closingDay: closing, billingDay: billing })
-                });
-                const json = await res.json();
-                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('エラーが発生しました'); }
-            }
-
-            // カードを更新する
-            async function updateCard() {
-                const id      = document.getElementById('editCardId').value;
-                const name    = document.getElementById('editCardName').value.trim();
-                const closing = parseInt(document.getElementById('editCardClosing').value);
-                const billing = parseInt(document.getElementById('editCardBilling').value);
-                if (!name || !closing || !billing) { alert('全項目を入力してください'); return; }
-
-                const res  = await fetch(`/api/kakeibo/card/${id}`, {
-                    method  : 'PUT',
-                    headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ name, closingDay: closing, billingDay: billing })
-                });
-                const json = await res.json();
-                if (res.ok) {
-                    closeModal('modalCard');
-                    showBanner(json.message);
-                    setTimeout(() => location.reload(), 1000);
-                } else { alert('更新に失敗しました'); }
-            }
-
-            // カードを削除する（確認ダイアログあり）
-            async function deleteCard(btn) {
-                const id   = btn.dataset.id;
-                const name = btn.dataset.name;
-                if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
-
-                const res  = await fetch(`/api/kakeibo/card/${id}`, { method: 'DELETE' });
-                const json = await res.json();
-                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('削除に失敗しました'); }
-            }
-
-            // =====================================================
-            // 固定費操作
-            // =====================================================
-
-            // data属性から値を取得してモーダルを開く
-            function openEditFixed(btn) {
-                document.getElementById('editFixedId').value       = btn.dataset.id;
-                document.getElementById('editFixedName').value     = btn.dataset.name;
-                document.getElementById('editFixedAmount').value   = btn.dataset.amount;
-                document.getElementById('editFixedDay').value      = btn.dataset.day;
-                document.getElementById('editFixedCategory').value = btn.dataset.category;
-                document.getElementById('editFixedPayment').value  = btn.dataset.payment;
-                openModal('modalFixed');
-            }
-
-            // 固定費を追加する
-            async function addFixed() {
-                const name       = document.getElementById('fixedName').value.trim();
-                const amount     = parseInt(document.getElementById('fixedAmount').value);
-                const day        = parseInt(document.getElementById('fixedDay').value);
-                const categoryId = document.getElementById('fixedCategory').value;
-                const payment    = document.getElementById('fixedPayment').value;
-                if (!name || !amount || !day) { alert('全項目を入力してください'); return; }
-
-                const res  = await fetch('/api/kakeibo/fixed', {
-                    method  : 'POST',
-                    headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ name, amount, dayOfMonth: day, categoryId, paymentMethod: payment })
-                });
-                const json = await res.json();
-                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('エラーが発生しました'); }
-            }
-
-            // 固定費を更新する
-            async function updateFixed() {
-                const id         = document.getElementById('editFixedId').value;
-                const name       = document.getElementById('editFixedName').value.trim();
-                const amount     = parseInt(document.getElementById('editFixedAmount').value);
-                const day        = parseInt(document.getElementById('editFixedDay').value);
-                const categoryId = document.getElementById('editFixedCategory').value;
-                const payment    = document.getElementById('editFixedPayment').value;
-                if (!name || !amount || !day) { alert('全項目を入力してください'); return; }
-
-                const res  = await fetch(`/api/kakeibo/fixed/${id}`, {
-                    method  : 'PUT',
-                    headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ name, amount, dayOfMonth: day, categoryId, paymentMethod: payment })
-                });
-                const json = await res.json();
-                if (res.ok) {
-                    closeModal('modalFixed');
-                    showBanner(json.message);
-                    setTimeout(() => location.reload(), 1000);
-                } else { alert('更新に失敗しました'); }
-            }
-
-            // 固定費を削除する（確認ダイアログあり）
-            async function deleteFixed(btn) {
-                const id   = btn.dataset.id;
-                const name = btn.dataset.name;
-                if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
-
-                const res  = await fetch(`/api/kakeibo/fixed/${id}`, { method: 'DELETE' });
-                const json = await res.json();
-                if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
-                else { alert('削除に失敗しました'); }
-            }
+        async function deleteFixed(btn) {
+            const id = btn.dataset.id, name = btn.dataset.name;
+            if (!confirm(`「${name}」を削除してもよいですか？\nこの操作は元に戻せません。`)) return;
+            const res  = await fetch(`/api/kakeibo/fixed/${id}`, { method: 'DELETE' });
+            const json = await res.json();
+            if (res.ok) { showBanner(json.message); setTimeout(() => location.reload(), 1000); }
+            else { alert('削除に失敗しました'); }
+        }
     </script>
 </body>
 </html>
