@@ -1,0 +1,15 @@
+{
+  "name": "家計簿",
+  "short_name": "家計簿",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f2f8",
+  "theme_color": "#2a3c78",
+  "icons": [
+    {
+      "src": "/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
