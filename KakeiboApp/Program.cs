@@ -8,28 +8,23 @@ builder.Services.AddRazorPages();
 builder.Services.AddControllers();
 
 // =====================================================
-// SQLite データベースの設定
+// PostgreSQL データベースの設定
 // =====================================================
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
-                       ?? "Data Source=kakeibo.db";
+                       ?? "Host=localhost;Database=kakeibo;Username=postgres;Password=postgres";
 
 builder.Services.AddDbContext<KakeiboDbContext>(options =>
-    options.UseSqlite(connectionString));
+    options.UseNpgsql(connectionString));
 
 // =====================================================
 // Cookie認証の設定
-// ログイン・ログアウトをCookieで管理する
 // =====================================================
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        // 未ログイン時のリダイレクト先
         options.LoginPath = "/Login";
-        // ログアウト後のリダイレクト先
         options.LogoutPath = "/Logout";
-        // Cookieの有効期限（30日）
         options.ExpireTimeSpan = TimeSpan.FromDays(30);
-        // スライディングセッション（アクセスのたびに期限を延長）
         options.SlidingExpiration = true;
     });
 
@@ -50,7 +45,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
 
-// 認証・認可ミドルウェア（必ずUseRoutingの後に）
 app.UseAuthentication();
 app.UseAuthorization();
 
