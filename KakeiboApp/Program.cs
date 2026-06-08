@@ -14,7 +14,8 @@ var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__De
                        ?? "Host=localhost;Database=kakeibo;Username=postgres;Password=postgres";
 
 builder.Services.AddDbContext<KakeiboDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(connectionString, o =>
+        o.EnableLegacyTimestampBehavior()));
 
 // =====================================================
 // Cookie認証の設定
