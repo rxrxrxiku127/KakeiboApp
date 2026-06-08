@@ -1,6 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using KakeiboApp.Models;
+using Npgsql;
+
+// タイムゾーン問題の修正
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,8 +18,7 @@ var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__De
                        ?? "Host=localhost;Database=kakeibo;Username=postgres;Password=postgres";
 
 builder.Services.AddDbContext<KakeiboDbContext>(options =>
-    options.UseNpgsql(connectionString, o =>
-        o.EnableLegacyTimestampBehavior()));
+    options.UseNpgsql(connectionString));
 
 // =====================================================
 // Cookie認証の設定
