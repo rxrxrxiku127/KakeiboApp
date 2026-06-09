@@ -59,6 +59,8 @@ namespace KakeiboApp.Pages
                 .OrderByDescending(t => t.Date)
                 .ToListAsync();
 
+            Console.WriteLine($"AllTransactions count: {AllTransactions.Count}, Transactions count after skip: {AllTransactions.Skip((CurrentPage - 1) * PageSize).Take(PageSize).Count()}");
+
             TotalIncome = AllTransactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
             TotalExpense = AllTransactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
 
