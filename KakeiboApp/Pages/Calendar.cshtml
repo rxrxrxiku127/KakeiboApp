@@ -14,35 +14,197 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>カレンダー</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'メイリオ', sans-serif; background: #f0f2f8; color: #333; padding-bottom: 20px; }
-        .header { background: #2a3c78; color: white; padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .header-title { font-size: 18px; font-weight: bold; flex-shrink: 0; }
-        .header-nav { display: flex; align-items: center; gap: 6px; }
-        .nav-link { color: white; text-decoration: none; padding: 5px 8px; border-radius: 6px; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 2px; flex-shrink: 0; }
-        .nav-link:hover { background: rgba(255,255,255,0.15); }
-        .nav-link span { font-size: 16px; }
-        .nav-link small { font-size: 9px; }
-        .btn-back { color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; background: rgba(255,255,255,0.15); }
-        .month-nav { background: white; display: flex; align-items: center; justify-content: center; gap: 15px; padding: 10px; border-bottom: 1px solid #eee; }
-        .month-nav button { background: #2a3c78; border: none; color: white; padding: 5px 14px; border-radius: 6px; cursor: pointer; font-size: 15px; }
-        .month-nav span { font-size: 16px; font-weight: bold; color: #2a3c78; }
-        .container { padding: 10px; max-width: 100%; margin: 0 auto; }
-        .calendar { background: white; border-radius: 10px; padding: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
-        .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; margin-bottom: 6px; }
-        .calendar-header div { text-align: center; font-size: 11px; font-weight: bold; color: gray; padding: 4px 0; }
-        .calendar-header div:first-child { color: #dc4646; }
-        .calendar-header div:last-child { color: #4682dc; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-        .calendar-day { min-height: 56px; border: 1px solid #f0f0f0; border-radius: 4px; padding: 3px; cursor: pointer; transition: background 0.2s; overflow: hidden; }
-        .calendar-day:hover { background: #f0f4ff; }
-        .calendar-day.empty { background: transparent; border: none; cursor: default; }
-        .calendar-day.today { border-color: #2a3c78; background: #f0f4ff; }
-        .day-number { font-size: 11px; font-weight: bold; margin-bottom: 1px; }
-        .day-sunday .day-number { color: #dc4646; }
-        .day-saturday .day-number { color: #4682dc; }
-        .day-income { font-size: 9px; color: #3c9660; font-weight: bold; word-break: break-all; }
-        .day-expense { font-size: 9px; color: #dc4646; font-weight: bold; word-break: break-all; }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'メイリオ', sans-serif;
+                background: #f0f2f8;
+                color: #333;
+                padding-bottom: 20px;
+            }
+
+            .header {
+                background: #2a3c78;
+                color: white;
+                padding: 12px 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .header-title {
+                font-size: 18px;
+                font-weight: bold;
+                flex-shrink: 0;
+            }
+
+            .header-nav {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+
+            .nav-link {
+                color: white;
+                text-decoration: none;
+                padding: 5px 8px;
+                border-radius: 6px;
+                font-size: 12px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                flex-shrink: 0;
+            }
+
+                .nav-link:hover {
+                    background: rgba(255,255,255,0.15);
+                }
+
+                .nav-link span {
+                    font-size: 16px;
+                }
+
+                .nav-link small {
+                    font-size: 9px;
+                }
+
+            .btn-back {
+                color: white;
+                text-decoration: none;
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 13px;
+                background: rgba(255,255,255,0.15);
+            }
+
+            .month-nav {
+                background: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+            }
+
+                .month-nav button {
+                    background: #2a3c78;
+                    border: none;
+                    color: white;
+                    padding: 5px 14px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 15px;
+                }
+
+                .month-nav span {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #2a3c78;
+                }
+
+            .container {
+                padding: 10px;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+
+            .calendar {
+                background: white;
+                border-radius: 10px;
+                padding: 10px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            }
+
+            .calendar-header {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 2px;
+                margin-bottom: 6px;
+            }
+
+                .calendar-header div {
+                    text-align: center;
+                    font-size: 11px;
+                    font-weight: bold;
+                    color: gray;
+                    padding: 4px 0;
+                }
+
+                    .calendar-header div:first-child {
+                        color: #dc4646;
+                    }
+
+                    .calendar-header div:last-child {
+                        color: #4682dc;
+                    }
+
+            .calendar-grid {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 2px;
+            }
+
+            .calendar-day {
+                min-height: 56px;
+                border: 1px solid #f0f0f0;
+                border-radius: 4px;
+                padding: 3px;
+                cursor: pointer;
+                transition: background 0.2s;
+                overflow: hidden;
+            }
+
+                .calendar-day:hover {
+                    background: #f0f4ff;
+                }
+
+                .calendar-day.empty {
+                    background: transparent;
+                    border: none;
+                    cursor: default;
+                }
+
+                .calendar-day.today {
+                    border-color: #2a3c78;
+                    background: #f0f4ff;
+                }
+
+            .day-number {
+                font-size: 11px;
+                font-weight: bold;
+                margin-bottom: 1px;
+            }
+
+            .day-sunday .day-number {
+                color: #dc4646;
+            }
+
+            .day-saturday .day-number {
+                color: #4682dc;
+            }
+
+            .day-income {
+                font-size: 9px;
+                color: #3c9660;
+                font-weight: bold;
+                word-break: break-all;
+            }
+
+            .day-expense {
+                font-size: 9px;
+                color: #dc4646;
+                font-weight: bold;
+                word-break: break-all;
+            }
     </style>
 </head>
 <body>
@@ -82,14 +244,14 @@
                 }
                 @for (int day = 1; day <= daysInMonth; day++)
                 {
-                    var date      = new DateTime(Model.Year, Model.Month, day);
-                    var dow       = (int)date.DayOfWeek;
-                    var isToday   = date.Date == DateTime.Today;
-                    var dowClass  = dow == 0 ? "day-sunday" : dow == 6 ? "day-saturday" : "";
+                    var date = new DateTime(Model.Year, Model.Month, day);
+                    var dow = (int)date.DayOfWeek;
+                    var isToday = date.Date == DateTime.Today;
+                    var dowClass = dow == 0 ? "day-sunday" : dow == 6 ? "day-saturday" : "";
                     var todayClass = isToday ? " today" : "";
-                    var hasData   = Model.DailyTotals.ContainsKey(day);
-                    var income    = hasData ? Model.DailyTotals[day].Income  : 0;
-                    var expense   = hasData ? Model.DailyTotals[day].Expense : 0;
+                    var hasData = Model.DailyTotals.ContainsKey(day);
+                    var income = hasData ? Model.DailyTotals[day].Income : 0;
+                    var expense = hasData ? Model.DailyTotals[day].Expense : 0;
 
                     <div class="calendar-day @dowClass@todayClass"
                          onclick="window.location.href='/?year=@Model.Year&month=@Model.Month'">
@@ -109,17 +271,17 @@
     </div>
 
     <script>
-        function changeMonth(delta) {
-            const url   = new URL(window.location.href);
-            let year    = parseInt(url.searchParams.get('year')  || '@Model.Year');
-            let month   = parseInt(url.searchParams.get('month') || '@Model.Month');
-            month += delta;
-            if (month > 12) { month = 1; year++; }
-            if (month < 1)  { month = 12; year--; }
-            url.searchParams.set('year',  year);
-            url.searchParams.set('month', month);
-            window.location.href = url.toString();
-        }
+            function changeMonth(delta) {
+                const url   = new URL(window.location.href);
+                let year    = parseInt(url.searchParams.get('year')  || '@Model.Year');
+                let month   = parseInt(url.searchParams.get('month') || '@Model.Month');
+                month += delta;
+                if (month > 12) { month = 1; year++; }
+                if (month < 1)  { month = 12; year--; }
+                url.searchParams.set('year',  year);
+                url.searchParams.set('month', month);
+                window.location.href = url.toString();
+            }
     </script>
 </body>
 </html>

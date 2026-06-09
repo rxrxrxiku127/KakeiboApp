@@ -18,9 +18,6 @@ namespace KakeiboApp.Api
 
         public AuthController(KakeiboDbContext db) { _db = db; }
 
-        // =====================================================
-        // 新規登録 POST /api/auth/register
-        // =====================================================
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest req)
         {
@@ -38,7 +35,7 @@ namespace KakeiboApp.Api
             var user = new AppUser
             {
                 UserId = req.UserId.Trim(),
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password, workFactor: 10)
             };
 
             _db.Users.Add(user);
@@ -63,9 +60,6 @@ namespace KakeiboApp.Api
             return Ok(new { message = "登録しました！" });
         }
 
-        // =====================================================
-        // ログイン POST /api/auth/login
-        // =====================================================
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest req)
         {
@@ -79,20 +73,17 @@ namespace KakeiboApp.Api
             if (user == null)
                 return Unauthorized(new { message = "ユーザーIDまたはパスワードが違います" });
 
-            // BCryptで照合、失敗したらSHA-256で照合（移行用）
             bool passwordValid = false;
             if (user.PasswordHash.StartsWith("$2"))
             {
-                // BCryptハッシュ
                 passwordValid = BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash);
             }
             else
             {
-                // 旧SHA-256ハッシュ → 一致したらBCryptに移行
                 passwordValid = user.PasswordHash == HashSHA256(req.Password);
                 if (passwordValid)
                 {
-                    user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
+                    user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password, workFactor: 10);
                     await _db.SaveChangesAsync();
                 }
             }
@@ -121,9 +112,6 @@ namespace KakeiboApp.Api
             return Ok(new { message = "ログインしました！" });
         }
 
-        // =====================================================
-        // ログアウト POST /api/auth/logout
-        // =====================================================
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
@@ -131,9 +119,6 @@ namespace KakeiboApp.Api
             return Ok(new { message = "ログアウトしました" });
         }
 
-        // =====================================================
-        // パスワード変更 POST /api/auth/change-password
-        // =====================================================
         [HttpPost("change-password")]
         [Authorize]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest req)
@@ -142,7 +127,6 @@ namespace KakeiboApp.Api
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null) return NotFound();
 
-            // BCryptで照合、失敗したらSHA-256で照合（移行用）
             bool passwordValid = false;
             if (user.PasswordHash.StartsWith("$2"))
             {
@@ -159,15 +143,12 @@ namespace KakeiboApp.Api
             if (req.NewPassword.Length < 6)
                 return BadRequest(new { message = "新しいパスワードは6文字以上にしてください" });
 
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.NewPassword);
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.NewPassword, workFactor: 10);
             await _db.SaveChangesAsync();
 
             return Ok(new { message = "パスワードを変更しました！" });
         }
 
-        // =====================================================
-        // SHA-256ハッシュ化（旧方式・移行用）
-        // =====================================================
         private string HashSHA256(string password)
         {
             using var sha256 = SHA256.Create();

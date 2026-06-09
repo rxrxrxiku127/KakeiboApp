@@ -10,9 +10,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>ログイン - 家計簿</title>
-    @* PWA用アイコン設定 *@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="家計簿" />
     <style>
             * {
@@ -91,7 +90,16 @@
                 font-weight: bold;
                 cursor: pointer;
                 margin-top: 10px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
             }
+
+                .btn-login:disabled {
+                    background: #aaa;
+                    cursor: not-allowed;
+                }
 
             .divider {
                 text-align: center;
@@ -111,6 +119,22 @@
                     font-weight: bold;
                     text-decoration: none;
                 }
+
+            .spinner {
+                width: 18px;
+                height: 18px;
+                border: 2px solid rgba(255,255,255,0.4);
+                border-top-color: white;
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+                display: none;
+            }
+
+            @@keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
     </style>
 </head>
 <body>
@@ -129,7 +153,10 @@
             <input type="password" id="password" placeholder="パスワードを入力" />
         </div>
 
-        <button class="btn-login" onclick="login()">ログイン</button>
+        <button class="btn-login" id="loginBtn" onclick="login()">
+            <div class="spinner" id="spinner"></div>
+            <span id="btnText">ログイン</span>
+        </button>
 
         <div class="divider">または</div>
 
@@ -149,6 +176,14 @@
                     return;
                 }
 
+                // ローディング表示
+                const btn     = document.getElementById('loginBtn');
+                const spinner = document.getElementById('spinner');
+                const btnText = document.getElementById('btnText');
+                btn.disabled        = true;
+                spinner.style.display = 'block';
+                btnText.textContent   = 'ログイン中...';
+
                 const res = await fetch('/api/auth/login', {
                     method  : 'POST',
                     headers : { 'Content-Type': 'application/json' },
@@ -160,6 +195,9 @@
                 } else {
                     const json = await res.json();
                     alert(json.message || 'ログインに失敗しました');
+                    btn.disabled          = false;
+                    spinner.style.display = 'none';
+                    btnText.textContent   = 'ログイン';
                 }
             }
 
