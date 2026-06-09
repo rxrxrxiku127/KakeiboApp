@@ -28,7 +28,11 @@ namespace KakeiboApp.Pages
 
         public int Year { get; set; }
         public int Month { get; set; }
+        public int CurrentPage { get; set; }
+        public int TotalPages { get; set; }
+        public const int PageSize = 8;
         public List<Transaction> Transactions { get; set; } = new();
+        public List<Transaction> AllTransactions { get; set; } = new();
         public List<string> Notifications { get; set; } = new();
         public List<BudgetProgressItem> BudgetProgress { get; set; } = new();
         public int TotalIncome { get; set; }
@@ -37,25 +41,36 @@ namespace KakeiboApp.Pages
         public List<Category> Categories { get; set; } = new();
         public string DisplayName { get; set; } = "";
 
-        public async Task OnGetAsync(int? year, int? month)
+        public async Task OnGetAsync(int? year, int? month, int? page)
         {
             var userId = GetUserId();
             Year = year ?? DateTime.Today.Year;
             Month = month ?? DateTime.Today.Month;
+            CurrentPage = page ?? 1;
             DisplayName = User.FindFirstValue(ClaimTypes.Name) ?? "";
 
             Categories = await _db.Categories
                 .Where(c => c.UserId == userId).ToListAsync();
 
-            Transactions = await _db.Transactions
+            AllTransactions = await _db.Transactions
                 .Where(t => t.UserId == userId &&
                             t.Date.Year == Year &&
                             t.Date.Month == Month)
                 .OrderByDescending(t => t.Date)
                 .ToListAsync();
 
-            TotalIncome = Transactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
-            TotalExpense = Transactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+            TotalIncome = AllTransactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
+            TotalExpense = AllTransactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+
+            TotalPages = (int)Math.Ceiling(AllTransactions.Count / (double)PageSize);
+            if (TotalPages == 0) TotalPages = 1;
+            if (CurrentPage < 1) CurrentPage = 1;
+            if (CurrentPage > TotalPages) CurrentPage = TotalPages;
+
+            Transactions = AllTransactions
+                .Skip((CurrentPage - 1) * PageSize)
+                .Take(PageSize)
+                .ToList();
 
             BudgetProgress = Categories
                 .Where(c => c.BudgetLimit > 0)
@@ -63,7 +78,7 @@ namespace KakeiboApp.Pages
                 {
                     Icon = c.Icon,
                     Name = c.Name,
-                    Used = Transactions
+                    Used = AllTransactions
                             .Where(t => t.CategoryId == c.Id && t.Type == TransactionType.Expense)
                             .Sum(t => t.Amount),
                     Limit = c.BudgetLimit

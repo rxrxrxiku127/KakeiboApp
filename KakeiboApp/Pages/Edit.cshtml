@@ -11,36 +11,231 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>取引編集</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'メイリオ', sans-serif; background: #f0f2f8; color: #333; padding-bottom: 20px; }
-        .header { background: #2a3c78; color: white; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-        .header-title { font-size: 18px; font-weight: bold; }
-        .header-nav { display: flex; align-items: center; gap: 8px; }
-        .nav-link { color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .nav-link:hover { background: rgba(255,255,255,0.15); }
-        .nav-link span { font-size: 18px; }
-        .nav-link small { font-size: 10px; }
-        .btn-back { color: white; text-decoration: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; display: flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.15); }
-        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
-        .card { background: white; border-radius: 10px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 12px; font-weight: bold; color: gray; margin-bottom: 6px; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; font-family: 'メイリオ', sans-serif; }
-        .amount-input { font-size: 24px !important; font-weight: bold; text-align: right; color: #2a3c78; }
-        .type-toggle { display: flex; margin-bottom: 15px; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
-        .type-toggle button { flex: 1; padding: 12px; border: none; background: white; font-size: 14px; font-weight: bold; cursor: pointer; }
-        .type-toggle button.active-expense { background: #dc4646; color: white; }
-        .type-toggle button.active-income { background: #3c9660; color: white; }
-        .category-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .cat-btn { padding: 10px 5px; border: 2px solid #eee; border-radius: 8px; background: white; cursor: pointer; text-align: center; font-size: 11px; }
-        .cat-btn .cat-icon { font-size: 20px; display: block; margin-bottom: 3px; }
-        .cat-btn.selected { border-color: #2a3c78; background: #f0f4ff; }
-        .payment-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
-        .pay-btn { padding: 10px; border: 2px solid #eee; border-radius: 8px; background: white; cursor: pointer; font-size: 13px; font-weight: bold; }
-        .pay-btn.selected { border-color: #2a3c78; background: #f0f4ff; color: #2a3c78; }
-        .card-section { display: none; margin-top: 12px; }
-        .submit-btn { width: 100%; padding: 15px; background: #2a3c78; color: white; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
-        .banner { display: none; position: fixed; top: 70px; left: 50%; transform: translateX(-50%); background: #3c9660; color: white; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: bold; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family: 'メイリオ', sans-serif;
+                background: #f0f2f8;
+                color: #333;
+                padding-bottom: 20px;
+            }
+
+            .header {
+                background: #2a3c78;
+                color: white;
+                padding: 12px 20px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .header-title {
+                font-size: 18px;
+                font-weight: bold;
+            }
+
+            .header-nav {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .nav-link {
+                color: white;
+                text-decoration: none;
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 13px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+            }
+
+                .nav-link:hover {
+                    background: rgba(255,255,255,0.15);
+                }
+
+                .nav-link span {
+                    font-size: 18px;
+                }
+
+                .nav-link small {
+                    font-size: 10px;
+                }
+
+            .btn-back {
+                color: white;
+                text-decoration: none;
+                padding: 6px 12px;
+                border-radius: 6px;
+                font-size: 13px;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                background: rgba(255,255,255,0.15);
+            }
+
+            .container {
+                padding: 15px;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .card {
+                background: white;
+                border-radius: 10px;
+                padding: 15px;
+                margin-bottom: 15px;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+                .form-group label {
+                    display: block;
+                    font-size: 12px;
+                    font-weight: bold;
+                    color: gray;
+                    margin-bottom: 6px;
+                }
+
+                .form-group input, .form-group select {
+                    width: 100%;
+                    padding: 10px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-family: 'メイリオ', sans-serif;
+                }
+
+            .amount-input {
+                font-size: 24px !important;
+                font-weight: bold;
+                text-align: right;
+                color: #2a3c78;
+            }
+
+            .type-toggle {
+                display: flex;
+                margin-bottom: 15px;
+                background: white;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            }
+
+                .type-toggle button {
+                    flex: 1;
+                    padding: 12px;
+                    border: none;
+                    background: white;
+                    font-size: 14px;
+                    font-weight: bold;
+                    cursor: pointer;
+                }
+
+                    .type-toggle button.active-expense {
+                        background: #dc4646;
+                        color: white;
+                    }
+
+                    .type-toggle button.active-income {
+                        background: #3c9660;
+                        color: white;
+                    }
+
+            .category-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 8px;
+            }
+
+            .cat-btn {
+                padding: 10px 5px;
+                border: 2px solid #eee;
+                border-radius: 8px;
+                background: white;
+                cursor: pointer;
+                text-align: center;
+                font-size: 11px;
+            }
+
+                .cat-btn .cat-icon {
+                    font-size: 20px;
+                    display: block;
+                    margin-bottom: 3px;
+                }
+
+                .cat-btn.selected {
+                    border-color: #2a3c78;
+                    background: #f0f4ff;
+                }
+
+            .payment-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .pay-btn {
+                padding: 10px;
+                border: 2px solid #eee;
+                border-radius: 8px;
+                background: white;
+                cursor: pointer;
+                font-size: 13px;
+                font-weight: bold;
+            }
+
+                .pay-btn.selected {
+                    border-color: #2a3c78;
+                    background: #f0f4ff;
+                    color: #2a3c78;
+                }
+
+            .card-section {
+                display: none;
+                margin-top: 12px;
+            }
+
+            .submit-btn {
+                width: 100%;
+                padding: 15px;
+                background: #2a3c78;
+                color: white;
+                border: none;
+                border-radius: 10px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+                margin-bottom: 10px;
+            }
+
+            .banner {
+                display: none;
+                position: fixed;
+                top: 70px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #3c9660;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: bold;
+                z-index: 999;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
     </style>
 </head>
 <body>
@@ -135,102 +330,102 @@
     }
 
     <script>
-        const categories     = @Html.Raw(Model.CategoriesJson);
-        let selectedCategory = '@Model.Transaction?.CategoryId';
-        let selectedPayment  = '@Model.Transaction?.PaymentMethod';
-        let selectedType     = '@Model.Transaction?.Type';
+            const categories     = @Html.Raw(Model.CategoriesJson);
+            let selectedCategory = '@Model.Transaction?.CategoryId';
+            let selectedPayment  = '@Model.Transaction?.PaymentMethod';
+            let selectedType     = '@Model.Transaction?.Type';
 
-        function showBanner(message) {
-            const banner = document.getElementById('banner');
-            banner.textContent   = message;
-            banner.style.display = 'block';
-            setTimeout(() => banner.style.display = 'none', 2000);
-        }
-
-        function setType(type) {
-            selectedType = type;
-            document.getElementById('btnExpense').className = type === 'Expense' ? 'active-expense' : '';
-            document.getElementById('btnIncome').className  = type === 'Income'  ? 'active-income'  : '';
-        }
-
-        function setPayment(payment, btn) {
-            selectedPayment = payment;
-            document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
-            document.getElementById('cardSection').style.display = payment === 'Card' ? 'block' : 'none';
-        }
-
-        function renderCategories() {
-            const grid = document.getElementById('categoryGrid');
-            grid.innerHTML = '';
-            categories.forEach(c => {
-                const btn = document.createElement('button');
-                btn.className = 'cat-btn' + (c.id === selectedCategory ? ' selected' : '');
-                btn.innerHTML = `<span class="cat-icon">${c.icon}</span>${c.name}`;
-                btn.onclick = () => {
-                    selectedCategory = c.id;
-                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
-                    btn.classList.add('selected');
-                };
-                grid.appendChild(btn);
-            });
-        }
-
-        async function update() {
-            const amount    = parseInt(document.getElementById('amount').value);
-            const date      = document.getElementById('date').value;
-            const note      = document.getElementById('note').value;
-            const isFixed   = document.getElementById('isFixed').checked;
-            const cardId    = document.getElementById('cardSelect')?.value || null;
-            const billingDate = document.getElementById('billingDate')?.value || null;
-
-            if (!amount || !date || !selectedCategory) {
-                alert('金額・日付・カテゴリを入力してください');
-                return;
+            function showBanner(message) {
+                const banner = document.getElementById('banner');
+                banner.textContent   = message;
+                banner.style.display = 'block';
+                setTimeout(() => banner.style.display = 'none', 2000);
             }
 
-            const res = await fetch(`/api/kakeibo/transaction/@Model.Transaction?.Id`, {
-                method  : 'PUT',
-                headers : { 'Content-Type': 'application/json' },
-                body    : JSON.stringify({
-                    amount,
-                    date,
-                    note,
-                    categoryId    : selectedCategory,
-                    paymentMethod : selectedPayment,
-                    type          : selectedType,
-                    isFixed,
-                    cardId        : cardId || null,
-                    billingDate   : billingDate || null
-                })
-            });
-
-            const json = await res.json();
-            if (res.ok) {
-                showBanner(json.message);
-                setTimeout(() => window.location.href = '/', 1000);
-            } else {
-                alert('更新に失敗しました');
+            function setType(type) {
+                selectedType = type;
+                document.getElementById('btnExpense').className = type === 'Expense' ? 'active-expense' : '';
+                document.getElementById('btnIncome').className  = type === 'Income'  ? 'active-income'  : '';
             }
-        }
 
-        // 初期化
-        setType(selectedType);
-        document.querySelectorAll('.pay-btn').forEach(btn => {
-            const payMap = {
-                '💵 現金': 'Cash',
-                '💳 カード': 'Card',
-                '📲 電子マネー': 'ElectronicMoney',
-                '📱 QR決済': 'QRPayment',
-                '🏦 口座': 'BankAccount'
-            };
-            if (payMap[btn.textContent.trim()] === selectedPayment) {
+            function setPayment(payment, btn) {
+                selectedPayment = payment;
+                document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
-                if (selectedPayment === 'Card') document.getElementById('cardSection').style.display = 'block';
+                document.getElementById('cardSection').style.display = payment === 'Card' ? 'block' : 'none';
             }
-        });
-        document.getElementById('cardSelect').value = '@Model.Transaction?.CardId';
-        renderCategories();
+
+            function renderCategories() {
+                const grid = document.getElementById('categoryGrid');
+                grid.innerHTML = '';
+                categories.forEach(c => {
+                    const btn = document.createElement('button');
+                    btn.className = 'cat-btn' + (c.id === selectedCategory ? ' selected' : '');
+                    btn.innerHTML = `<span class="cat-icon">${c.icon}</span>${c.name}`;
+                    btn.onclick = () => {
+                        selectedCategory = c.id;
+                        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                    };
+                    grid.appendChild(btn);
+                });
+            }
+
+            async function update() {
+                const amount    = parseInt(document.getElementById('amount').value);
+                const date      = document.getElementById('date').value;
+                const note      = document.getElementById('note').value;
+                const isFixed   = document.getElementById('isFixed').checked;
+                const cardId    = document.getElementById('cardSelect')?.value || null;
+                const billingDate = document.getElementById('billingDate')?.value || null;
+
+                if (!amount || !date || !selectedCategory) {
+                    alert('金額・日付・カテゴリを入力してください');
+                    return;
+                }
+
+                const res = await fetch(`/api/kakeibo/transaction/@Model.Transaction?.Id`, {
+                    method  : 'PUT',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({
+                        amount,
+                        date,
+                        note,
+                        categoryId    : selectedCategory,
+                        paymentMethod : selectedPayment,
+                        type          : selectedType,
+                        isFixed,
+                        cardId        : cardId || null,
+                        billingDate   : billingDate || null
+                    })
+                });
+
+                const json = await res.json();
+                if (res.ok) {
+                    showBanner(json.message);
+                    setTimeout(() => window.location.href = '/', 1000);
+                } else {
+                    alert('更新に失敗しました');
+                }
+            }
+
+            // 初期化
+            setType(selectedType);
+            document.querySelectorAll('.pay-btn').forEach(btn => {
+                const payMap = {
+                    '💵 現金': 'Cash',
+                    '💳 カード': 'Card',
+                    '📲 電子マネー': 'ElectronicMoney',
+                    '📱 QR決済': 'QRPayment',
+                    '🏦 口座': 'BankAccount'
+                };
+                if (payMap[btn.textContent.trim()] === selectedPayment) {
+                    btn.classList.add('selected');
+                    if (selectedPayment === 'Card') document.getElementById('cardSection').style.display = 'block';
+                }
+            });
+            document.getElementById('cardSelect').value = '@Model.Transaction?.CardId';
+            renderCategories();
     </script>
 </body>
 </html>
