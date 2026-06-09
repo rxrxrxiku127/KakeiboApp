@@ -47,7 +47,7 @@ namespace KakeiboApp.Pages
             Year = year ?? DateTime.Today.Year;
             Month = month ?? DateTime.Today.Month;
             CurrentPage = page ?? 1;
-            DisplayName = User.FindFirstValue(ClaimTypes.Name) ?? "";
+            Console.WriteLine($"Page parameter: {page}, CurrentPage: {CurrentPage}");
 
             Categories = await _db.Categories
                 .Where(c => c.UserId == userId).ToListAsync();
