@@ -316,15 +316,6 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="form-group">
-                    <label>
-                        <input type="checkbox" id="isFixed" @(Model.Transaction.IsFixed ? "checked" : "") />
-                        固定費として登録する（毎月自動で計上）
-                    </label>
-                </div>
-            </div>
-
             <button class="submit-btn" onclick="update()">💾 更新する</button>
         </div>
     }
@@ -372,11 +363,10 @@
             }
 
             async function update() {
-                const amount    = parseInt(document.getElementById('amount').value);
-                const date      = document.getElementById('date').value;
-                const note      = document.getElementById('note').value;
-                const isFixed   = document.getElementById('isFixed').checked;
-                const cardId    = document.getElementById('cardSelect')?.value || null;
+                const amount      = parseInt(document.getElementById('amount').value);
+                const date        = document.getElementById('date').value;
+                const note        = document.getElementById('note').value;
+                const cardId      = document.getElementById('cardSelect')?.value || null;
                 const billingDate = document.getElementById('billingDate')?.value || null;
 
                 if (!amount || !date || !selectedCategory) {
@@ -394,7 +384,7 @@
                         categoryId    : selectedCategory,
                         paymentMethod : selectedPayment,
                         type          : selectedType,
-                        isFixed,
+                        isFixed       : false,
                         cardId        : cardId || null,
                         billingDate   : billingDate || null
                     })
@@ -409,7 +399,6 @@
                 }
             }
 
-            // 初期化
             setType(selectedType);
             document.querySelectorAll('.pay-btn').forEach(btn => {
                 const payMap = {

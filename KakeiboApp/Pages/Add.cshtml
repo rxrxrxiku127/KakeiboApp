@@ -1,7 +1,7 @@
 ﻿@page
-@model KakeiboApp.Pages.AddModel
+@model KakeiboApp.Pages.EditModel
 @{
-    ViewData["Title"] = "収支追加";
+    ViewData["Title"] = "取引編集";
 }
 
 <!DOCTYPE html>
@@ -9,11 +9,8 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>収支追加</title>
+    <title>取引編集</title>
     <style>
-            /* =====================================================
-                       リセット・基本スタイル
-                       ===================================================== */
             * {
                 box-sizing: border-box;
                 margin: 0;
@@ -27,9 +24,6 @@
                 padding-bottom: 20px;
             }
 
-            /* =====================================================
-                       共通ヘッダー
-                       ===================================================== */
             .header {
                 background: #2a3c78;
                 color: white;
@@ -69,10 +63,6 @@
                     background: rgba(255,255,255,0.15);
                 }
 
-                .nav-link.active {
-                    background: rgba(255,255,255,0.25);
-                }
-
                 .nav-link span {
                     font-size: 18px;
                 }
@@ -81,7 +71,6 @@
                     font-size: 10px;
                 }
 
-            /* 戻るボタン */
             .btn-back {
                 color: white;
                 text-decoration: none;
@@ -94,9 +83,6 @@
                 background: rgba(255,255,255,0.15);
             }
 
-            /* =====================================================
-                       フォームスタイル
-                       ===================================================== */
             .container {
                 padding: 15px;
                 max-width: 600px;
@@ -123,7 +109,7 @@
                     margin-bottom: 6px;
                 }
 
-                .form-group input, .form-group select, .form-group textarea {
+                .form-group input, .form-group select {
                     width: 100%;
                     padding: 10px;
                     border: 1px solid #ddd;
@@ -132,7 +118,6 @@
                     font-family: 'メイリオ', sans-serif;
                 }
 
-            /* 金額入力（大きく表示） */
             .amount-input {
                 font-size: 24px !important;
                 font-weight: bold;
@@ -140,7 +125,6 @@
                 color: #2a3c78;
             }
 
-            /* 収入・支出切り替えボタン */
             .type-toggle {
                 display: flex;
                 margin-bottom: 15px;
@@ -170,7 +154,6 @@
                         color: white;
                     }
 
-            /* カテゴリグリッド（4列） */
             .category-grid {
                 display: grid;
                 grid-template-columns: repeat(4, 1fr);
@@ -198,7 +181,6 @@
                     background: #f0f4ff;
                 }
 
-            /* 支払い方法グリッド（2列） */
             .payment-grid {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
@@ -221,13 +203,11 @@
                     color: #2a3c78;
                 }
 
-            /* カード選択セクション（カード選択時のみ表示） */
             .card-section {
                 display: none;
                 margin-top: 12px;
             }
 
-            /* 保存ボタン */
             .submit-btn {
                 width: 100%;
                 padding: 15px;
@@ -238,9 +218,9 @@
                 font-size: 16px;
                 font-weight: bold;
                 cursor: pointer;
+                margin-bottom: 10px;
             }
 
-            /* 成功バナー */
             .banner {
                 display: none;
                 position: fixed;
@@ -259,20 +239,12 @@
     </style>
 </head>
 <body>
-
     <div id="banner" class="banner"></div>
 
-    @*
-    =====================================================
-    共通ヘッダー
-    左：戻るボタン / 中：タイトル / 右：ナビリンク
-    =====================================================
-    *@
     <div class="header">
         <div style="display:flex;align-items:center;gap:10px">
-            @* 戻るボタン（ホームに戻る） *@
             <a href="/" class="btn-back">← 戻る</a>
-            <div class="header-title">➕ 収支追加</div>
+            <div class="header-title">✏️ 取引編集</div>
         </div>
         <div class="header-nav">
             <a href="/" class="nav-link"><span>🏠</span><small>ホーム</small></a>
@@ -281,196 +253,167 @@
         </div>
     </div>
 
-    <div class="container">
-
-        @* 収入・支出の切り替えボタン *@
-        <div class="type-toggle">
-            <button id="btnExpense" class="active-expense" onclick="setType('Expense')">💸 支出</button>
-            <button id="btnIncome" onclick="setType('Income')">💴 収入</button>
-        </div>
-
-        @* 基本情報入力フォーム *@
-        <div class="card">
-            @* 金額入力 *@
-            <div class="form-group">
-                <label>金額（円）</label>
-                <input type="number" id="amount" class="amount-input" placeholder="0" min="0" />
+    @if (Model.Transaction == null)
+    {
+        <div style="padding:20px;color:red">取引が見つかりませんでした。</div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="type-toggle">
+                <button id="btnExpense" onclick="setType('Expense')">💸 支出</button>
+                <button id="btnIncome" onclick="setType('Income')">💴 収入</button>
             </div>
 
-            @* 日付入力（デフォルトは今日） *@
-            <div class="form-group">
-                <label>日付</label>
-                <input type="date" id="date" value="@DateTime.Today.ToString("yyyy-MM-dd")" />
-            </div>
-
-            @* メモ入力（任意） *@
-            <div class="form-group">
-                <label>メモ（任意）</label>
-                <input type="text" id="note" placeholder="例：スーパーで買い物" />
-            </div>
-        </div>
-
-        @* カテゴリ選択 *@
-        <div class="card">
-            <div class="form-group">
-                <label>カテゴリ</label>
-                @* JSでカテゴリボタンを動的に生成する *@
-                <div class="category-grid" id="categoryGrid"></div>
-            </div>
-        </div>
-
-        @* 支払い方法選択 *@
-        <div class="card">
-            <div class="form-group">
-                <label>支払い方法</label>
-                <div class="payment-grid">
-                    <button class="pay-btn selected" onclick="setPayment('Cash', this)">💵 現金</button>
-                    <button class="pay-btn" onclick="setPayment('Card', this)">💳 カード</button>
-                    <button class="pay-btn" onclick="setPayment('ElectronicMoney', this)">📲 電子マネー</button>
-                    <button class="pay-btn" onclick="setPayment('QRPayment', this)">📱 QR決済</button>
-                    <button class="pay-btn" onclick="setPayment('BankAccount', this)">🏦 口座</button>
-                </div>
-            </div>
-
-            @* カード選択（カード払い選択時のみ表示） *@
-            <div class="card-section" id="cardSection">
+            <div class="card">
                 <div class="form-group">
-                    <label>使用カード</label>
-                    <select id="cardSelect">
-                        <option value="">カードを選択</option>
-                        @foreach (var card in Model.Cards)
-                        {
-                            <option value="@card.Id">@card.Name（締め日：@card.ClosingDay 日／引き落とし：@card.BillingDay 日）</option>
-                        }
-                    </select>
+                    <label>金額（円）</label>
+                    <input type="number" id="amount" class="amount-input" value="@Model.Transaction.Amount" min="0" />
                 </div>
                 <div class="form-group">
-                    <label>引き落とし日</label>
-                    <input type="date" id="billingDate" />
+                    <label>日付</label>
+                    <input type="date" id="date" value="@Model.Transaction.Date.ToString("yyyy-MM-dd")" />
+                </div>
+                <div class="form-group">
+                    <label>メモ（任意）</label>
+                    <input type="text" id="note" value="@Model.Transaction.Note" placeholder="例：スーパーで買い物" />
                 </div>
             </div>
-        </div>
 
-        @* 固定費登録チェック *@
-        <div class="card">
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" id="isFixed" />
-                    固定費として登録する（毎月自動で計上）
-                </label>
+            <div class="card">
+                <div class="form-group">
+                    <label>カテゴリ</label>
+                    <div class="category-grid" id="categoryGrid"></div>
+                </div>
             </div>
-        </div>
 
-        @* 保存ボタン *@
-        <button class="submit-btn" onclick="submit()">💾 保存する</button>
-    </div>
+            <div class="card">
+                <div class="form-group">
+                    <label>支払い方法</label>
+                    <div class="payment-grid">
+                        <button class="pay-btn" onclick="setPayment('Cash', this)">💵 現金</button>
+                        <button class="pay-btn" onclick="setPayment('Card', this)">💳 カード</button>
+                        <button class="pay-btn" onclick="setPayment('ElectronicMoney', this)">📲 電子マネー</button>
+                        <button class="pay-btn" onclick="setPayment('QRPayment', this)">📱 QR決済</button>
+                        <button class="pay-btn" onclick="setPayment('BankAccount', this)">🏦 口座</button>
+                    </div>
+                </div>
+                <div class="card-section" id="cardSection">
+                    <div class="form-group">
+                        <label>使用カード</label>
+                        <select id="cardSelect">
+                            <option value="">カードを選択</option>
+                            @foreach (var card in Model.Cards)
+                            {
+                                <option value="@card.Id">@card.Name（締め日：@card.ClosingDay 日／引き落とし：@card.BillingDay 日）</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>引き落とし日</label>
+                        <input type="date" id="billingDate" value="@Model.Transaction.BillingDate?.ToString("yyyy-MM-dd")" />
+                    </div>
+                </div>
+            </div>
+
+            <button class="submit-btn" onclick="update()">💾 更新する</button>
+        </div>
+    }
 
     <script>
-            // =====================================================
-            // 状態管理
-            // =====================================================
-            let selectedType     = 'Expense'; // 収支タイプ（Expense/Income）
-            let selectedCategory = '';         // 選択中のカテゴリID
-            let selectedPayment  = 'Cash';     // 選択中の支払い方法
+            const categories     = @Html.Raw(Model.CategoriesJson);
+            let selectedCategory = '@Model.Transaction?.CategoryId';
+            let selectedPayment  = '@Model.Transaction?.PaymentMethod';
+            let selectedType     = '@Model.Transaction?.Type';
 
-            // サーバーから渡されたカテゴリ一覧（JSON）
-            const categories = @Html.Raw(Model.CategoriesJson);
+            function showBanner(message) {
+                const banner = document.getElementById('banner');
+                banner.textContent   = message;
+                banner.style.display = 'block';
+                setTimeout(() => banner.style.display = 'none', 2000);
+            }
 
-            // =====================================================
-            // setType(type)
-            // 収入・支出を切り替える
-            // =====================================================
             function setType(type) {
                 selectedType = type;
                 document.getElementById('btnExpense').className = type === 'Expense' ? 'active-expense' : '';
                 document.getElementById('btnIncome').className  = type === 'Income'  ? 'active-income'  : '';
             }
 
-            // =====================================================
-            // setPayment(method, btn)
-            // 支払い方法を切り替える
-            // カード選択時はカード詳細セクションを表示する
-            // =====================================================
-            function setPayment(method, btn) {
-                selectedPayment = method;
+            function setPayment(payment, btn) {
+                selectedPayment = payment;
                 document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
-
-                // カード払いのみカード詳細セクションを表示
-                document.getElementById('cardSection').style.display = method === 'Card' ? 'block' : 'none';
+                document.getElementById('cardSection').style.display = payment === 'Card' ? 'block' : 'none';
             }
 
-            // =====================================================
-            // renderCategories()
-            // カテゴリグリッドを動的に生成する
-            // 選択中のカテゴリにselectedクラスを付与する
-            // =====================================================
             function renderCategories() {
                 const grid = document.getElementById('categoryGrid');
                 grid.innerHTML = '';
                 categories.forEach(c => {
                     const btn = document.createElement('button');
-                    btn.className = 'cat-btn' + (selectedCategory === c.id ? ' selected' : '');
+                    btn.className = 'cat-btn' + (c.id === selectedCategory ? ' selected' : '');
                     btn.innerHTML = `<span class="cat-icon">${c.icon}</span>${c.name}`;
-                    btn.onclick   = () => { selectedCategory = c.id; renderCategories(); };
+                    btn.onclick = () => {
+                        selectedCategory = c.id;
+                        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('selected'));
+                        btn.classList.add('selected');
+                    };
                     grid.appendChild(btn);
                 });
             }
 
-            // =====================================================
-            // showBanner(message)
-            // 成功バナーを表示する（2秒後に自動非表示）
-            // =====================================================
-            function showBanner(message) {
-                const banner = document.getElementById('banner');
-                banner.textContent    = message;
-                banner.style.display  = 'block';
-                setTimeout(() => banner.style.display = 'none', 2000);
-            }
+            async function update() {
+                const amount      = parseInt(document.getElementById('amount').value);
+                const date        = document.getElementById('date').value;
+                const note        = document.getElementById('note').value;
+                const cardId      = document.getElementById('cardSelect')?.value || null;
+                const billingDate = document.getElementById('billingDate')?.value || null;
 
-            // =====================================================
-            // submit()
-            // フォームの内容をバリデーションしてAPIに送信する
-            // POST /api/kakeibo/transaction
-            // 成功後はバナーを表示してホームに戻る
-            // =====================================================
-            async function submit() {
-                // バリデーション
-                const amount = parseInt(document.getElementById('amount').value);
-                if (!amount || amount <= 0) { alert('金額を入力してください'); return; }
-                if (!selectedCategory)      { alert('カテゴリを選択してください'); return; }
+                if (!amount || !date || !selectedCategory) {
+                    alert('金額・日付・カテゴリを入力してください');
+                    return;
+                }
 
-                // リクエストデータを組み立てる
-                const data = {
-                    amount,
-                    date          : document.getElementById('date').value,
-                    note          : document.getElementById('note').value,
-                    categoryId    : selectedCategory,
-                    paymentMethod : selectedPayment,
-                    type          : selectedType,
-                    isFixed       : document.getElementById('isFixed').checked,
-                    cardId        : document.getElementById('cardSelect')?.value || null,
-                    billingDate   : document.getElementById('billingDate')?.value || null
-                };
-
-                // POST /api/kakeibo/transaction にリクエスト送信
-                const res  = await fetch('/api/kakeibo/transaction', {
-                    method  : 'POST',
+                const res = await fetch(`/api/kakeibo/transaction/@Model.Transaction?.Id`, {
+                    method  : 'PUT',
                     headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify(data)
+                    body    : JSON.stringify({
+                        amount,
+                        date,
+                        note,
+                        categoryId    : selectedCategory,
+                        paymentMethod : selectedPayment,
+                        type          : selectedType,
+                        isFixed       : false,
+                        cardId        : cardId || null,
+                        billingDate   : billingDate || null
+                    })
                 });
-                const json = await res.json();
 
+                const json = await res.json();
                 if (res.ok) {
                     showBanner(json.message);
-                    // 1秒後にホームに戻る
                     setTimeout(() => window.location.href = '/', 1000);
                 } else {
-                    alert('エラーが発生しました');
+                    alert('更新に失敗しました');
                 }
             }
 
-            // 初期表示時にカテゴリグリッドを生成
+            setType(selectedType);
+            document.querySelectorAll('.pay-btn').forEach(btn => {
+                const payMap = {
+                    '💵 現金': 'Cash',
+                    '💳 カード': 'Card',
+                    '📲 電子マネー': 'ElectronicMoney',
+                    '📱 QR決済': 'QRPayment',
+                    '🏦 口座': 'BankAccount'
+                };
+                if (payMap[btn.textContent.trim()] === selectedPayment) {
+                    btn.classList.add('selected');
+                    if (selectedPayment === 'Card') document.getElementById('cardSection').style.display = 'block';
+                }
+            });
+            document.getElementById('cardSelect').value = '@Model.Transaction?.CardId';
             renderCategories();
     </script>
 </body>
