@@ -38,7 +38,7 @@ namespace KakeiboApp.Api
             var user = new AppUser
             {
                 UserId = req.UserId.Trim(),
-                PasswordHash = HashPassword(req.Password)
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password)
             };
 
             _db.Users.Add(user);
@@ -76,7 +76,28 @@ namespace KakeiboApp.Api
             var user = await _db.Users.FirstOrDefaultAsync(
                 u => u.UserId == req.UserId.Trim());
 
-            if (user == null || user.PasswordHash != HashPassword(req.Password))
+            if (user == null)
+                return Unauthorized(new { message = "ユーザーIDまたはパスワードが違います" });
+
+            // BCryptで照合、失敗したらSHA-256で照合（移行用）
+            bool passwordValid = false;
+            if (user.PasswordHash.StartsWith("$2"))
+            {
+                // BCryptハッシュ
+                passwordValid = BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash);
+            }
+            else
+            {
+                // 旧SHA-256ハッシュ → 一致したらBCryptに移行
+                passwordValid = user.PasswordHash == HashSHA256(req.Password);
+                if (passwordValid)
+                {
+                    user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
+                    await _db.SaveChangesAsync();
+                }
+            }
+
+            if (!passwordValid)
                 return Unauthorized(new { message = "ユーザーIDまたはパスワードが違います" });
 
             var claims = new List<Claim>
@@ -121,22 +142,33 @@ namespace KakeiboApp.Api
             var user = await _db.Users.FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null) return NotFound();
 
-            if (user.PasswordHash != HashPassword(req.CurrentPassword))
+            // BCryptで照合、失敗したらSHA-256で照合（移行用）
+            bool passwordValid = false;
+            if (user.PasswordHash.StartsWith("$2"))
+            {
+                passwordValid = BCrypt.Net.BCrypt.Verify(req.CurrentPassword, user.PasswordHash);
+            }
+            else
+            {
+                passwordValid = user.PasswordHash == HashSHA256(req.CurrentPassword);
+            }
+
+            if (!passwordValid)
                 return BadRequest(new { message = "現在のパスワードが違います" });
 
             if (req.NewPassword.Length < 6)
                 return BadRequest(new { message = "新しいパスワードは6文字以上にしてください" });
 
-            user.PasswordHash = HashPassword(req.NewPassword);
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.NewPassword);
             await _db.SaveChangesAsync();
 
             return Ok(new { message = "パスワードを変更しました！" });
         }
 
         // =====================================================
-        // パスワードハッシュ化（SHA256）
+        // SHA-256ハッシュ化（旧方式・移行用）
         // =====================================================
-        private string HashPassword(string password)
+        private string HashSHA256(string password)
         {
             using var sha256 = SHA256.Create();
             var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
