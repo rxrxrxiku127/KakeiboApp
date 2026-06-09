@@ -147,6 +147,11 @@
                 color: white;
             }
 
+            .btn-warning {
+                background: #f59e0b;
+                color: white;
+            }
+
             .btn-small {
                 padding: 5px 10px;
                 font-size: 12px;
@@ -288,6 +293,29 @@
         </div>
     </div>
 
+    @* パスワード変更モーダル *@
+    <div class="modal-overlay" id="modalPassword">
+        <div class="modal">
+            <h3>🔑 パスワードを変更</h3>
+            <div class="form-group">
+                <label>現在のパスワード</label>
+                <input type="password" id="currentPassword" placeholder="現在のパスワード" />
+            </div>
+            <div class="form-group">
+                <label>新しいパスワード（6文字以上）</label>
+                <input type="password" id="newPassword" placeholder="新しいパスワード" />
+            </div>
+            <div class="form-group">
+                <label>新しいパスワード（確認）</label>
+                <input type="password" id="newPasswordConfirm" placeholder="もう一度入力" />
+            </div>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeModal('modalPassword')">キャンセル</button>
+                <button class="btn-save" onclick="changePassword()">変更する</button>
+            </div>
+        </div>
+    </div>
+
     @* 共通ヘッダー *@
     <div class="header">
         <div class="header-title">⚙️ 設定</div>
@@ -299,6 +327,12 @@
     </div>
 
     <div class="container">
+
+        @* アカウント管理 *@
+        <div class="card">
+            <h3>👤 アカウント管理</h3>
+            <button class="btn btn-primary" style="background:#f59e0b" onclick="openModal('modalPassword')">🔑 パスワードを変更する</button>
+        </div>
 
         @* カテゴリ管理 *@
         <div class="card">
@@ -477,6 +511,30 @@
 
             function openModal(id)  { document.getElementById(id).style.display = 'flex'; }
             function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+            // パスワード変更
+            async function changePassword() {
+                const current = document.getElementById('currentPassword').value;
+                const newPw   = document.getElementById('newPassword').value;
+                const confirm = document.getElementById('newPasswordConfirm').value;
+                if (!current || !newPw) { alert('全項目を入力してください'); return; }
+                if (newPw.length < 6) { alert('新しいパスワードは6文字以上にしてください'); return; }
+                if (newPw !== confirm) { alert('新しいパスワードが一致しません'); return; }
+                const res  = await fetch('/api/auth/change-password', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword: current, newPassword: newPw })
+                });
+                const json = await res.json();
+                if (res.ok) {
+                    closeModal('modalPassword');
+                    showBanner(json.message);
+                    document.getElementById('currentPassword').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('newPasswordConfirm').value = '';
+                } else {
+                    alert(json.message || 'パスワードの変更に失敗しました');
+                }
+            }
 
             // カテゴリ操作
             async function addCategory() {
