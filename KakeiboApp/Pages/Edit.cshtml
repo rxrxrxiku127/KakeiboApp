@@ -110,9 +110,7 @@
                             <option value="">カードを選択</option>
                             @foreach (var card in Model.Cards)
                             {
-                                <option value="@card.Id" @(Model.Transaction.CardId == card.Id ? "selected" : "")>
-                                    @card.Name（締め日：@card.ClosingDay 日／引き落とし：@card.BillingDay 日）
-                                </option>
+                                <option value="@card.Id">@card.Name（締め日：@card.ClosingDay 日／引き落とし：@card.BillingDay 日）</option>
                             }
                         </select>
                     </div>
@@ -137,7 +135,7 @@
     }
 
     <script>
-        const categories = @Html.Raw(Model.CategoriesJson);
+        const categories     = @Html.Raw(Model.CategoriesJson);
         let selectedCategory = '@Model.Transaction?.CategoryId';
         let selectedPayment  = '@Model.Transaction?.PaymentMethod';
         let selectedType     = '@Model.Transaction?.Type';
@@ -179,11 +177,11 @@
         }
 
         async function update() {
-            const amount = parseInt(document.getElementById('amount').value);
-            const date   = document.getElementById('date').value;
-            const note   = document.getElementById('note').value;
-            const isFixed = document.getElementById('isFixed').checked;
-            const cardId  = document.getElementById('cardSelect')?.value || null;
+            const amount    = parseInt(document.getElementById('amount').value);
+            const date      = document.getElementById('date').value;
+            const note      = document.getElementById('note').value;
+            const isFixed   = document.getElementById('isFixed').checked;
+            const cardId    = document.getElementById('cardSelect')?.value || null;
             const billingDate = document.getElementById('billingDate')?.value || null;
 
             if (!amount || !date || !selectedCategory) {
@@ -219,12 +217,19 @@
         // 初期化
         setType(selectedType);
         document.querySelectorAll('.pay-btn').forEach(btn => {
-            const payMap = { '💵 現金': 'Cash', '💳 カード': 'Card', '📲 電子マネー': 'ElectronicMoney', '📱 QR決済': 'QRPayment', '🏦 口座': 'BankAccount' };
+            const payMap = {
+                '💵 現金': 'Cash',
+                '💳 カード': 'Card',
+                '📲 電子マネー': 'ElectronicMoney',
+                '📱 QR決済': 'QRPayment',
+                '🏦 口座': 'BankAccount'
+            };
             if (payMap[btn.textContent.trim()] === selectedPayment) {
                 btn.classList.add('selected');
                 if (selectedPayment === 'Card') document.getElementById('cardSection').style.display = 'block';
             }
         });
+        document.getElementById('cardSelect').value = '@Model.Transaction?.CardId';
         renderCategories();
     </script>
 </body>
