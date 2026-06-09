@@ -35,7 +35,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<KakeiboDbContext>();
-    db.Database.EnsureCreated();
+    try { db.Database.EnsureCreated(); } catch { }
 }
 
 app.UseStaticFiles();
