@@ -51,7 +51,7 @@ namespace KakeiboApp.Pages
             Year = year ?? DateTime.Today.Year;
             Month = month ?? DateTime.Today.Month;
             CurrentPage = page ?? 1;
-            Console.WriteLine($"Page parameter: {page}, CurrentPage: {CurrentPage}");
+            DisplayName = User.FindFirstValue(ClaimTypes.Name) ?? "";
 
             Categories = await _db.Categories
                 .Where(c => c.UserId == userId).ToListAsync();
@@ -62,8 +62,6 @@ namespace KakeiboApp.Pages
                             t.Date.Month == Month)
                 .OrderByDescending(t => t.Date)
                 .ToListAsync();
-
-            Console.WriteLine($"AllTransactions count: {AllTransactions.Count}, Transactions count after skip: {AllTransactions.Skip((CurrentPage - 1) * PageSize).Take(PageSize).Count()}");
 
             TotalIncome = AllTransactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
             TotalExpense = AllTransactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);

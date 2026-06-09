@@ -6,13 +6,9 @@ using KakeiboApp.Models;
 
 namespace KakeiboApp.Api
 {
-    /// <summary>
-    /// 家計簿APIコントローラー
-    /// 認証済みユーザーのみアクセス可能
-    /// </summary>
     [ApiController]
     [Route("api/kakeibo")]
-    [Authorize] // ログイン必須
+    [Authorize]
     public class KakeiboController : ControllerBase
     {
         private readonly KakeiboDbContext _db;
@@ -22,9 +18,6 @@ namespace KakeiboApp.Api
             _db = db;
         }
 
-        // =====================================================
-        // ログイン中のユーザーIDを取得するヘルパー
-        // =====================================================
         private string GetUserId()
             => User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
 
@@ -32,7 +25,6 @@ namespace KakeiboApp.Api
         // 取引（Transaction）
         // ============================================================
 
-        /// <summary>取引を追加する POST /api/kakeibo/transaction</summary>
         [HttpPost("transaction")]
         public async Task<IActionResult> AddTransaction([FromBody] AddTransactionRequest req)
         {
@@ -48,16 +40,38 @@ namespace KakeiboApp.Api
                 IsFixed = req.IsFixed,
                 CardId = req.CardId,
                 BillingDate = string.IsNullOrEmpty(req.BillingDate)
-                                ? null : DateTime.Parse(req.BillingDate)
+                                  ? null : DateTime.Parse(req.BillingDate)
             };
 
             _db.Transactions.Add(transaction);
-            await _db.SaveChangesAsync();
 
+            // 固定費チェックがONの場合、FixedExpensesにも登録する
+            if (req.IsFixed && Enum.Parse<TransactionType>(req.Type) == TransactionType.Expense)
+            {
+                var date = DateTime.Parse(req.Date);
+                var exists = await _db.FixedExpenses.AnyAsync(f =>
+                    f.UserId == GetUserId() &&
+                    f.Name == (req.Note ?? "") &&
+                    f.Amount == req.Amount);
+
+                if (!exists)
+                {
+                    _db.FixedExpenses.Add(new FixedExpense
+                    {
+                        UserId = GetUserId(),
+                        Name = req.Note ?? "固定費",
+                        Amount = req.Amount,
+                        DayOfMonth = date.Day,
+                        CategoryId = req.CategoryId,
+                        PaymentMethod = Enum.Parse<PaymentMethod>(req.PaymentMethod)
+                    });
+                }
+            }
+
+            await _db.SaveChangesAsync();
             return Ok(new { message = "登録しました！", id = transaction.Id });
         }
 
-        /// <summary>取引を更新する PUT /api/kakeibo/transaction/{id}</summary>
         [HttpPut("transaction/{id}")]
         public async Task<IActionResult> UpdateTransaction(string id, [FromBody] AddTransactionRequest req)
         {
@@ -74,13 +88,12 @@ namespace KakeiboApp.Api
             item.IsFixed = req.IsFixed;
             item.CardId = req.CardId;
             item.BillingDate = string.IsNullOrEmpty(req.BillingDate)
-                                 ? null : DateTime.Parse(req.BillingDate);
+                                   ? null : DateTime.Parse(req.BillingDate);
 
             await _db.SaveChangesAsync();
             return Ok(new { message = "更新しました！" });
         }
 
-        /// <summary>取引を削除する DELETE /api/kakeibo/transaction/{id}</summary>
         [HttpDelete("transaction/{id}")]
         public async Task<IActionResult> DeleteTransaction(string id)
         {
@@ -97,7 +110,6 @@ namespace KakeiboApp.Api
         // カテゴリ（Category）
         // ============================================================
 
-        /// <summary>カテゴリを追加する POST /api/kakeibo/category</summary>
         [HttpPost("category")]
         public async Task<IActionResult> AddCategory([FromBody] AddCategoryRequest req)
         {
@@ -115,7 +127,6 @@ namespace KakeiboApp.Api
             return Ok(new { message = "登録しました！", id = category.Id });
         }
 
-        /// <summary>カテゴリを更新する PUT /api/kakeibo/category/{id}</summary>
         [HttpPut("category/{id}")]
         public async Task<IActionResult> UpdateCategory(string id, [FromBody] AddCategoryRequest req)
         {
@@ -131,7 +142,6 @@ namespace KakeiboApp.Api
             return Ok(new { message = "更新しました！" });
         }
 
-        /// <summary>カテゴリを削除する DELETE /api/kakeibo/category/{id}</summary>
         [HttpDelete("category/{id}")]
         public async Task<IActionResult> DeleteCategory(string id)
         {
@@ -151,7 +161,6 @@ namespace KakeiboApp.Api
         // カード（CreditCard）
         // ============================================================
 
-        /// <summary>カードを追加する POST /api/kakeibo/card</summary>
         [HttpPost("card")]
         public async Task<IActionResult> AddCard([FromBody] AddCardRequest req)
         {
@@ -168,7 +177,6 @@ namespace KakeiboApp.Api
             return Ok(new { message = "登録しました！", id = card.Id });
         }
 
-        /// <summary>カードを更新する PUT /api/kakeibo/card/{id}</summary>
         [HttpPut("card/{id}")]
         public async Task<IActionResult> UpdateCard(string id, [FromBody] AddCardRequest req)
         {
@@ -184,7 +192,6 @@ namespace KakeiboApp.Api
             return Ok(new { message = "更新しました！" });
         }
 
-        /// <summary>カードを削除する DELETE /api/kakeibo/card/{id}</summary>
         [HttpDelete("card/{id}")]
         public async Task<IActionResult> DeleteCard(string id)
         {
@@ -201,7 +208,6 @@ namespace KakeiboApp.Api
         // 固定費（FixedExpense）
         // ============================================================
 
-        /// <summary>固定費を追加する POST /api/kakeibo/fixed</summary>
         [HttpPost("fixed")]
         public async Task<IActionResult> AddFixed([FromBody] AddFixedRequest req)
         {
@@ -220,7 +226,6 @@ namespace KakeiboApp.Api
             return Ok(new { message = "登録しました！", id = fixed_.Id });
         }
 
-        /// <summary>固定費を更新する PUT /api/kakeibo/fixed/{id}</summary>
         [HttpPut("fixed/{id}")]
         public async Task<IActionResult> UpdateFixed(string id, [FromBody] AddFixedRequest req)
         {
@@ -238,7 +243,6 @@ namespace KakeiboApp.Api
             return Ok(new { message = "更新しました！" });
         }
 
-        /// <summary>固定費を削除する DELETE /api/kakeibo/fixed/{id}</summary>
         [HttpDelete("fixed/{id}")]
         public async Task<IActionResult> DeleteFixed(string id)
         {
@@ -255,7 +259,6 @@ namespace KakeiboApp.Api
         // 固定費の自動計上
         // ============================================================
 
-        /// <summary>固定費を今月分として自動登録する POST /api/kakeibo/apply-fixed</summary>
         [HttpPost("apply-fixed")]
         public async Task<IActionResult> ApplyFixed([FromBody] YearMonthRequest req)
         {
