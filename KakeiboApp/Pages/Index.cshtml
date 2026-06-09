@@ -345,7 +345,13 @@
 
     <div class="add-btn-area">
         <div class="user-info">👤 @Model.DisplayName さん</div>
-        <a href="/Add" class="btn-add-main">＋ 収支を追加</a>
+        <div style="display:flex;gap:8px;">
+            <a href="/BillingHistory?year=@(Model.Month == 1 ? Model.Year - 1 : Model.Year)&month=@(Model.Month == 1 ? 12 : Model.Month - 1)"
+               class="btn-add-main" style="background:#f59e0b;">
+                💳 先月の翌月払い
+            </a>
+            <a href="/Add" class="btn-add-main">＋ 収支を追加</a>
+        </div>
     </div>
 
     <div class="month-nav">
