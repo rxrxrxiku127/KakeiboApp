@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -41,7 +42,10 @@ namespace KakeiboApp.Pages
         public List<Category> Categories { get; set; } = new();
         public string DisplayName { get; set; } = "";
 
-        public async Task OnGetAsync(int? year, int? month, int? page)
+        public async Task OnGetAsync(
+            [FromQuery] int? year,
+            [FromQuery] int? month,
+            [FromQuery] int? page)
         {
             var userId = GetUserId();
             Year = year ?? DateTime.Today.Year;
