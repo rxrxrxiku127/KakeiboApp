@@ -186,6 +186,7 @@
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
                 gap: 10px;
+                margin-bottom: 15px;
             }
 
             .summary-card {
@@ -361,6 +362,52 @@
         <button onclick="changeMonth(1)">▶</button>
     </div>
 
+    @* 左側ミニカレンダー（固定） *@
+    <div style="position:fixed;left:20px;top:200px;z-index:50;">
+        <a href="/Calendar?year=@Model.Year&month=@Model.Month" style="text-decoration:none;">
+            <div style="background:white;border-radius:10px;padding:10px;box-shadow:0 2px 6px rgba(0,0,0,0.12);width:130px;">
+                <div style="font-size:11px;font-weight:bold;color:#2a3c78;text-align:center;margin-bottom:6px;">
+                    📅 @Model.Month 月
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;text-align:center;">
+                    <div style="font-size:8px;color:#dc4646;">日</div>
+                    <div style="font-size:8px;color:gray;">月</div>
+                    <div style="font-size:8px;color:gray;">火</div>
+                    <div style="font-size:8px;color:gray;">水</div>
+                    <div style="font-size:8px;color:gray;">木</div>
+                    <div style="font-size:8px;color:gray;">金</div>
+                    <div style="font-size:8px;color:#4682dc;">土</div>
+                    @for (int i = 0; i < 7; i++)
+                    {
+                        var d = weekStart.AddDays(i);
+                        var isTodayCell = d.Date == today;
+                        var hasData = false;
+                        foreach (var t in Model.AllTransactions)
+                        {
+                            if (t.Date.Date == d.Date) { hasData = true; break; }
+                        }
+                        var numColor = i == 0 ? "#dc4646" : i == 6 ? "#4682dc" : "#333";
+                        <div style="font-size:10px;font-weight:@(isTodayCell ? "bold" : "normal");
+                            background:@(isTodayCell ? "#2a3c78" : "transparent");
+                            color:@(isTodayCell ? "white" : numColor);
+                            border-radius:50%;width:16px;height:16px;
+                            display:flex;align-items:center;justify-content:center;margin:0 auto 1px;">
+                            @d.Day
+                        </div>
+                        @if (hasData)
+                        {
+                            <div style="font-size:7px;color:#dc4646;text-align:center;line-height:1;">●</div>
+                        }
+                        else
+                        {
+                            <div style="font-size:7px;line-height:1;"> </div>
+                        }
+                    }
+                </div>
+            </div>
+        </a>
+    </div>
+
     <div class="container">
 
         @foreach (var n in Model.Notifications)
@@ -368,68 +415,18 @@
             <div class="notification">⚠️ @n</div>
         }
 
-        @* ミニカレンダー＋サマリー *@
-        <div style="display:flex;gap:15px;margin-bottom:15px;align-items:flex-start;">
-
-            @* ミニカレンダー（一週間分） *@
-            <a href="/Calendar?year=@Model.Year&month=@Model.Month"
-               style="text-decoration:none;flex-shrink:0;">
-                <div style="background:white;border-radius:10px;padding:10px;box-shadow:0 2px 6px rgba(0,0,0,0.08);width:150px;">
-                    <div style="font-size:11px;font-weight:bold;color:#2a3c78;text-align:center;margin-bottom:6px;">
-                        📅 @Model.Month 月
-                    </div>
-                    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;text-align:center;">
-                        <div style="font-size:9px;color:#dc4646;">日</div>
-                        <div style="font-size:9px;color:gray;">月</div>
-                        <div style="font-size:9px;color:gray;">火</div>
-                        <div style="font-size:9px;color:gray;">水</div>
-                        <div style="font-size:9px;color:gray;">木</div>
-                        <div style="font-size:9px;color:gray;">金</div>
-                        <div style="font-size:9px;color:#4682dc;">土</div>
-                        @for (int i = 0; i < 7; i++)
-                        {
-                            var d = weekStart.AddDays(i);
-                            var isTodayCell = d.Date == today;
-                            var hasData = false;
-                            foreach (var t in Model.AllTransactions)
-                            {
-                                if (t.Date.Date == d.Date) { hasData = true; break; }
-                            }
-                            var numColor = i == 0 ? "#dc4646" : i == 6 ? "#4682dc" : "#333";
-                            <div style="font-size:10px;font-weight:@(isTodayCell ? "bold" : "normal");
-                                background:@(isTodayCell ? "#2a3c78" : "transparent");
-                                color:@(isTodayCell ? "white" : numColor);
-                                border-radius:50%;width:16px;height:16px;
-                                display:flex;align-items:center;justify-content:center;margin:0 auto 1px;">
-                                @d.Day
-                            </div>
-                            @if (hasData)
-                            {
-                                <div style="font-size:7px;color:#dc4646;text-align:center;line-height:1;">●</div>
-                            }
-                            else
-                            {
-                                <div style="font-size:7px;line-height:1;"> </div>
-                            }
-                        }
-                    </div>
-                </div>
-            </a>
-
-            @* 収支サマリー *@
-            <div class="summary" style="flex:1;">
-                <div class="summary-card">
-                    <div class="label">収入</div>
-                    <div class="amount income">¥@Model.TotalIncome.ToString("#,0")</div>
-                </div>
-                <div class="summary-card">
-                    <div class="label">支出</div>
-                    <div class="amount expense">¥@Model.TotalExpense.ToString("#,0")</div>
-                </div>
-                <div class="summary-card">
-                    <div class="label">残高</div>
-                    <div class="amount balance">¥@Model.Balance.ToString("#,0")</div>
-                </div>
+        <div class="summary">
+            <div class="summary-card">
+                <div class="label">収入</div>
+                <div class="amount income">¥@Model.TotalIncome.ToString("#,0")</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">支出</div>
+                <div class="amount expense">¥@Model.TotalExpense.ToString("#,0")</div>
+            </div>
+            <div class="summary-card">
+                <div class="label">残高</div>
+                <div class="amount balance">¥@Model.Balance.ToString("#,0")</div>
             </div>
         </div>
 
