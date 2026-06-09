@@ -10,7 +10,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>家計簿アプリ</title>
-    @* PWA・Safari用アイコン設定 *@
     <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="家計簿" />
@@ -29,9 +28,6 @@
                 padding-bottom: 20px;
             }
 
-            /* =====================================================
-                       共通ヘッダー
-                       ===================================================== */
             .header {
                 background: #2a3c78;
                 color: white;
@@ -86,7 +82,6 @@
                     font-size: 9px;
                 }
 
-            /* ログアウトボタン */
             .btn-logout {
                 background: rgba(255,255,255,0.15);
                 color: white;
@@ -99,9 +94,6 @@
                 flex-shrink: 0;
             }
 
-            /* =====================================================
-                       追加ボタンエリア（ヘッダー直下）
-                       ===================================================== */
             .add-btn-area {
                 background: white;
                 padding: 10px 15px;
@@ -131,9 +123,6 @@
                 gap: 6px;
             }
 
-            /* =====================================================
-                       月ナビゲーション
-                       ===================================================== */
             .month-nav {
                 background: white;
                 display: flex;
@@ -160,16 +149,12 @@
                     color: #2a3c78;
                 }
 
-            /* コンテンツエリア */
             .container {
                 padding: 15px;
                 max-width: 600px;
                 margin: 0 auto;
             }
 
-            /* =====================================================
-                       通知バナー（予算警告）
-                       ===================================================== */
             .notification {
                 background: #fff3cd;
                 border-left: 4px solid #ffc107;
@@ -179,7 +164,6 @@
                 font-size: 13px;
             }
 
-            /* 成功バナー */
             .banner {
                 display: none;
                 position: fixed;
@@ -196,9 +180,6 @@
                 box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             }
 
-            /* =====================================================
-                       サマリーカード（収入・支出・残高）
-                       ===================================================== */
             .summary {
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
@@ -237,9 +218,6 @@
                 color: #2a3c78;
             }
 
-            /* =====================================================
-                       予算進捗バー
-                       ===================================================== */
             .budget-section {
                 background: white;
                 border-radius: 10px;
@@ -289,9 +267,6 @@
                 background: #dc4646;
             }
 
-            /* =====================================================
-                       取引一覧
-                       ===================================================== */
             .transaction-section {
                 background: white;
                 border-radius: 10px;
@@ -334,7 +309,6 @@
                 font-weight: bold;
             }
 
-            /* 操作ボタン */
             .btn-edit {
                 background: #4682dc;
                 color: white;
@@ -360,25 +334,21 @@
 
     <div id="banner" class="banner"></div>
 
-    @* 共通ヘッダー *@
     <div class="header">
         <div class="header-title">💴 家計簿</div>
         <div class="header-nav">
             <a href="/" class="nav-link active"><span>🏠</span><small>ホーム</small></a>
             <a href="/Report" class="nav-link"><span>📊</span><small>レポート</small></a>
             <a href="/Settings" class="nav-link"><span>⚙️</span><small>設定</small></a>
-            @* ログアウトボタン *@
             <button class="btn-logout" onclick="logout()">ログアウト</button>
         </div>
     </div>
 
-    @* 追加ボタンエリア *@
     <div class="add-btn-area">
         <div class="user-info">👤 @Model.DisplayName さん</div>
         <a href="/Add" class="btn-add-main">＋ 収支を追加</a>
     </div>
 
-    @* 月ナビゲーション *@
     <div class="month-nav">
         <button onclick="changeMonth(-1)">◀</button>
         <span>@Model.Year 年 @Model.Month 月</span>
@@ -387,13 +357,11 @@
 
     <div class="container">
 
-        @* 予算通知バナー *@
         @foreach (var n in Model.Notifications)
         {
             <div class="notification">⚠️ @n</div>
         }
 
-        @* 収支サマリー *@
         <div class="summary">
             <div class="summary-card">
                 <div class="label">収入</div>
@@ -409,7 +377,6 @@
             </div>
         </div>
 
-        @* 予算進捗 *@
         <div class="budget-section">
             <h3>📊 予算進捗</h3>
             @foreach (var b in Model.BudgetProgress)
@@ -430,7 +397,6 @@
             }
         </div>
 
-        @* 取引一覧 *@
         <div class="transaction-section">
             <h3>📋 今月の取引</h3>
             @if (!Model.Transactions.Any())
@@ -456,11 +422,8 @@
             }
         </div>
     </div>
+
     <script>
-            // =====================================================
-            // showBanner(message)
-            // 成功バナーを表示する（2秒後に自動非表示）
-            // =====================================================
             function showBanner(message, color = '#3c9660') {
                 const banner = document.getElementById('banner');
                 banner.textContent      = message;
@@ -469,10 +432,6 @@
                 setTimeout(() => banner.style.display = 'none', 2000);
             }
 
-            // =====================================================
-            // changeMonth(delta)
-            // 月ナビゲーションで前月・翌月に切り替える
-            // =====================================================
             function changeMonth(delta) {
                 const url   = new URL(window.location.href);
                 let year    = parseInt(url.searchParams.get('year')  || '@Model.Year');
@@ -485,16 +444,10 @@
                 window.location.href = url.toString();
             }
 
-            // =====================================================
-            // deleteTransaction(id)
-            // 取引を削除する（確認ダイアログあり）
-            // =====================================================
             async function deleteTransaction(id) {
                 if (!confirm('この取引を削除してもよいですか？\nこの操作は元に戻せません。')) return;
-
                 const res  = await fetch(`/api/kakeibo/transaction/${id}`, { method: 'DELETE' });
                 const data = await res.json();
-
                 if (res.ok) {
                     showBanner(data.message);
                     setTimeout(() => location.reload(), 1000);
@@ -503,26 +456,19 @@
                 }
             }
 
-            // =====================================================
-            // logout()
-            // ログアウトする
-            // =====================================================
             async function logout() {
                 if (!confirm('ログアウトしますか？')) return;
                 await fetch('/api/auth/logout', { method: 'POST' });
                 window.location.href = '/Login';
             }
 
-            // =====================================================
-            // ページ読み込み時に固定費を自動計上する
-            // =====================================================
-            (async function applyFixed() {
-                await fetch('/api/kakeibo/apply-fixed', {
-                    method  : 'POST',
-                    headers : { 'Content-Type': 'application/json' },
-                    body    : JSON.stringify({ year: @Model.Year, month: @Model.Month })
-                });
-            })();
+            // (async function applyFixed() {
+            //     await fetch('/api/kakeibo/apply-fixed', {
+            //         method  : 'POST',
+            //         headers : { 'Content-Type': 'application/json' },
+            //         body    : JSON.stringify({ year: @Model.Year, month: @Model.Month })
+            //     });
+            // })();
     </script>
 </body>
 </html>
