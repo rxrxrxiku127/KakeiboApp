@@ -462,13 +462,13 @@
                 window.location.href = '/Login';
             }
 
-            // (async function applyFixed() {
-            //     await fetch('/api/kakeibo/apply-fixed', {
-            //         method  : 'POST',
-            //         headers : { 'Content-Type': 'application/json' },
-            //         body    : JSON.stringify({ year: @Model.Year, month: @Model.Month })
-            //     });
-            // })();
+            (async function applyFixed() {
+                await fetch('/api/kakeibo/apply-fixed', {
+                    method  : 'POST',
+                    headers : { 'Content-Type': 'application/json' },
+                    body    : JSON.stringify({ year: @Model.Year, month: @Model.Month })
+                });
+            })();
     </script>
 </body>
 </html>
