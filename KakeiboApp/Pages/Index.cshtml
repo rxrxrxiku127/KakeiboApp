@@ -98,7 +98,7 @@
 
             .add-btn-area {
                 background: white;
-                padding: 10px 15px;
+                padding: 8px 15px;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -115,14 +115,15 @@
                 color: white;
                 border: none;
                 border-radius: 8px;
-                padding: 10px 18px;
-                font-size: 14px;
+                padding: 8px 10px;
+                font-size: 12px;
                 font-weight: bold;
                 cursor: pointer;
                 text-decoration: none;
                 display: inline-flex;
                 align-items: center;
-                gap: 6px;
+                gap: 4px;
+                white-space: nowrap;
             }
 
             .month-nav {
@@ -130,7 +131,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                gap: 15px;
+                gap: 10px;
                 padding: 10px;
                 border-bottom: 1px solid #eee;
             }
@@ -347,79 +348,25 @@
 
     <div class="add-btn-area">
         <div class="user-info">👤 @Model.DisplayName さん</div>
-        <div style="display:flex;gap:8px;">
+        <div style="display:flex;gap:6px;">
             <a href="/BillingHistory?year=@(Model.Month == 1 ? Model.Year - 1 : Model.Year)&month=@(Model.Month == 1 ? 12 : Model.Month - 1)"
                class="btn-add-main" style="background:#f59e0b;">
-                💳 先月の翌月払い
+                💳 翌月払い
             </a>
-            <a href="/Add" class="btn-add-main">＋ 収支を追加</a>
+            <a href="/Add" class="btn-add-main">＋ 追加</a>
         </div>
     </div>
 
     <div class="month-nav">
         <button onclick="changeMonth(-1)">◀</button>
         <span>@Model.Year 年 @Model.Month 月</span>
+        <a href="/Calendar?year=@Model.Year&month=@Model.Month"
+           style="text-decoration:none;background:white;border:1px solid #ddd;border-radius:8px;padding:4px 10px;font-size:12px;color:#2a3c78;font-weight:bold;">
+            📅 カレンダー
+        </a>
         <button onclick="changeMonth(1)">▶</button>
     </div>
 
-    @* 左側ミニカレンダー（固定） *@
-    <div style="position:fixed;left:10px;top:200px;z-index:50;">
-        <a href="/Calendar?year=@Model.Year&month=@Model.Month" style="text-decoration:none;">
-            <div style="background:white;border-radius:10px;padding:14px;box-shadow:0 2px 6px rgba(0,0,0,0.12);width:250px;">
-                <div style="font-size:13px;font-weight:bold;color:#2a3c78;text-align:center;margin-bottom:10px;">
-                    📅 @Model.Year 年 @Model.Month 月
-                </div>
-                <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;">
-                    <div style="font-size:10px;color:#dc4646;font-weight:bold;">日</div>
-                    <div style="font-size:10px;color:gray;font-weight:bold;">月</div>
-                    <div style="font-size:10px;color:gray;font-weight:bold;">火</div>
-                    <div style="font-size:10px;color:gray;font-weight:bold;">水</div>
-                    <div style="font-size:10px;color:gray;font-weight:bold;">木</div>
-                    <div style="font-size:10px;color:gray;font-weight:bold;">金</div>
-                    <div style="font-size:10px;color:#4682dc;font-weight:bold;">土</div>
-                    @for (int i = 0; i < 7; i++)
-                    {
-                        var d = weekStart.AddDays(i);
-                        var isTodayCell = d.Date == today;
-                        var hasData = false;
-                        int dayIncome = 0;
-                        int dayExpense = 0;
-                        foreach (var t in Model.AllTransactions)
-                        {
-                            if (t.Date.Date == d.Date)
-                            {
-                                hasData = true;
-                                if (t.Type == KakeiboApp.Models.TransactionType.Income)
-                                    dayIncome += t.Amount;
-                                else
-                                    dayExpense += t.Amount;
-                            }
-                        }
-                        var numColor = i == 0 ? "#dc4646" : i == 6 ? "#4682dc" : "#333";
-                        <div style="font-size:12px;font-weight:@(isTodayCell ? "bold" : "normal");
-                            background:@(isTodayCell ? "#2a3c78" : "transparent");
-                            color:@(isTodayCell ? "white" : numColor);
-                            border-radius:50%;width:24px;height:24px;
-                            display:flex;align-items:center;justify-content:center;margin:0 auto 2px;">
-                            @d.Day
-                        </div>
-                        @if (dayIncome > 0)
-                        {
-                            <div style="font-size:8px;color:#3c9660;text-align:center;line-height:1.3;font-weight:bold;">+¥@dayIncome.ToString("#,0")</div>
-                        }
-                        else if (dayExpense > 0)
-                        {
-                            <div style="font-size:8px;color:#dc4646;text-align:center;line-height:1.3;font-weight:bold;">-¥@dayExpense.ToString("#,0")</div>
-                        }
-                        else
-                        {
-                            <div style="font-size:8px;line-height:1.3;"> </div>
-                        }
-                    }
-                </div>
-            </div>
-        </a>
-    </div>
     <div class="container">
 
         @foreach (var n in Model.Notifications)
